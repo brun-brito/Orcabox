@@ -9,7 +9,7 @@ const firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const settings = {/* your settings... */ timestampsInSnapshots: true};
+const settings = {timestampsInSnapshots: true};
 db.settings(settings);
 
 async function Cadastrar() {
@@ -73,6 +73,26 @@ async function Cadastrar() {
     });
 
     return false;
+}
+
+async function atualizarPagamento(email) {
+    const userRef = db.collection('usuarios').where('email', '==', email);
+    const snapshot = await userRef.get();
+    
+    if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+    }
+
+    snapshot.forEach(doc => {
+        doc.ref.update({ pagamento: true })
+        .then(() => {
+            console.log('Pagamento atualizado com sucesso.');
+        })
+        .catch((error) => {
+            console.error('Erro ao atualizar pagamento: ', error);
+        });
+    });
 }
 
 function Login() {
