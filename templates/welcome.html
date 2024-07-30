@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaker - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Painel do Usuário</h2>
+        <div id="speaker-access-container"></div>
+        <div>
+            <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">Assinar Speaker</button>
+        </div>
+        <div>
+            <button type="button" class="button-logout" onclick="Logout()">Sair</button>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
+    <script src="{{ url_for('static', filename='firebase.js') }}"></script>   
+    <script>
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            checkUserPayment(user.email);
+        } else {
+            window.location.href = "/index";
+        }
+    });
+    </script> 
+</body>
+</html>

@@ -1,0 +1,117 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+.container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.container input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input {
+    width: calc(100% - 40px);
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+}
+
+.container button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    background-color: #28a745; 
+}
+
+.container button:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+}
+
+.button-logout {
+    background-color: #dc3545 !important; 
+}
+
+.button-logout:hover {
+    background-color: #c82333 !important;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4) !important;
+}
+
+.button-payment {
+    background-color: #17a2b8; 
+}
+
+.button-payment:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.4);
+}
+
+.container p {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.container a:hover {
+    text-decoration: underline;
+}
+
+.button-speaker-access {
+    background-color: rgba(0, 0, 255, 0.826) !important; 
+    color: white !important;;
+    padding: 12px !important;;
+    border: none !important;;
+    border-radius: 5px !important;;
+    cursor: pointer !important;;
+    font-size: 16px !important;;
+    margin-top: 10px !important;;
+    transition: background-color 0.3s, box-shadow 0.3s !important;;
+}
+
+.button-speaker-access:hover {
+    background-color: darkblue !important;;
+    box-shadow: 0 4px 8px rgba(0, 0, 139, 0.4) !important;;
+}
