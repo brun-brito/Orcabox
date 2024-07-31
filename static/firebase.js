@@ -75,26 +75,6 @@ async function Cadastrar() {
     return false;
 }
 
-async function atualizarPagamento(email) {
-    const userRef = db.collection('usuarios').where('email', '==', email);
-    const snapshot = await userRef.get();
-    
-    if (snapshot.empty) {
-        console.log('No matching documents.');
-        return;
-    }
-
-    snapshot.forEach(doc => {
-        doc.ref.update({ pagamento: true })
-        .then(() => {
-            console.log('Pagamento atualizado com sucesso.');
-        })
-        .catch((error) => {
-            console.error('Erro ao atualizar pagamento: ', error);
-        });
-    });
-}
-
 function Login() {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
@@ -226,11 +206,11 @@ function checkUserPayment(email) {
                     }
                 });
             } else {
-                console.log('No such document!');
+                console.log('Documento não encontrado!');
             }
         })
         .catch((error) => {
-            console.log('Error getting document:', error);
+            console.log('Erro ao obter documento:', error);
         });
 }
 
@@ -238,10 +218,37 @@ function showSpeakerAccessButton() {
     const container = document.getElementById('speaker-access-container');
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = 'Acesso ao Speaker';
+    button.textContent = 'Clique para acessar o Speaker';
     button.className = 'button-speaker-access';
     button.onclick = function() {
         window.location.href = 'https://wa.me/5531999722280';
     };
     container.appendChild(button);
+}
+
+function updatePaymentStatus(email) {
+    firebase.auth().onAuthStateChanged(function(user) {{
+        email = user.email;
+        console.log(`Atualizando status de pagamento para o email: ${email}`);
+        db.collection('usuarios').where('email', '==', email).get()
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                    const userRef = db.collection('usuarios').doc(doc.id);
+                    userRef.update({ pagamento: true })
+                        .then(() => {
+                            console.log('Status de pagamento atualizado com sucesso');
+                        })
+                        .catch((error) => {
+                            console.error('Erro ao atualizar status de pagamento:', error);
+                        });
+                });
+            } else {
+                console.log('Documento não encontrado!');
+            }
+        })
+        .catch((error) => {
+            console.error('Erro ao obter documento:', error);
+        });
+    }});
 }

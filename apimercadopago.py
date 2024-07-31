@@ -1,8 +1,13 @@
 import mercadopago
+from dotenv import load_dotenv
+import os
 
-sdk = mercadopago.SDK("APP_USR-1709159904607332-072416-43222ee5707268796c8829b5f03d1dae-1914238007")
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path=env_path)
+
+sdk = mercadopago.SDK(os.getenv('MERCADOPAGO_ACCESS_TOKEN'))
 def gerar_link_pagamento():
-    plan_id = '2c93808490edce280191044c92570658'
+    plan_id = (os.getenv('MERCADOPAGO_PLAN_ID'))
 
     plan_response = sdk.plan().get(plan_id)
     
@@ -17,11 +22,16 @@ def verificar_pagamento(preapproval_id):
     if payment_response['status'] == 200:
         return payment_response['response']
     else:
-        raise Exception("Não foi possível encontrar o pagamento.")
+        raise Exception("Não foi possível encontrar o pagamento. Tente atualizar a página ou aguarde alguns minutos e volte.")
 
+
+
+
+
+
+# --- funcao pra gerar produto unico (sem mensalidade)
 # def gerar_link_pagamento2():
 #     sdk = mercadopago.SDK("APP_USR-1709159904607332-072416-43222ee5707268796c8829b5f03d1dae-1914238007")
-
 #     payment_data = {
 #         "items": [
 #             {"id": "1", "title": "Speaker", "quantity": 1, "currency_id": "BRL", "unit_price": 100}
