@@ -1,8 +1,10 @@
 import mercadopago
 
-sdk = mercadopago.SDK("APP_USR-1709159904607332-072416-43222ee5707268796c8829b5f03d1dae-1914238007")
+sdk = mercadopago.SDK("APP_USR-8854709427891522-072413-893211bedde818fd605fbe992747a57a-352487457")
+#TESTE:sdk = mercadopago.SDK("APP_USR-1709159904607332-072416-43222ee5707268796c8829b5f03d1dae-1914238007")
 def gerar_link_pagamento():
-    plan_id = '2c93808490edce280191044c92570658'
+    plan_id = '2c93808490edce7401910448a49505fe'
+    #TESTE:plan_id = '2c93808490edce280191044c92570658'
     plan_response = sdk.plan().get(plan_id)
     
     if plan_response['status'] == 200:
