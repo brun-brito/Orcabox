@@ -1,13 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from apimercadopago import gerar_link_pagamento, verificar_pagamento
-from dotenv import load_dotenv
 import os
 
-env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
-load_dotenv(dotenv_path=env_path)
-
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY') 
+app.secret_key = 'supersecretkey'
 
 @app.route("/")
 def homepage():
