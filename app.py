@@ -15,8 +15,11 @@ def homepage():
 
 @app.route("/compracerta")
 def compra_certa():
-    email = session.get('user_email')
-    return render_template("compracerta.html", email=email)
+    if 'payment_authorized' in session and session['payment_authorized']:
+        email = session.get('user_email')
+        return render_template("compracerta.html", email=email)
+    else:
+        return redirect(url_for('homepage'))
 
 @app.route("/compraerrada")
 def compra_errada():
@@ -39,11 +42,13 @@ def verificar_pagamento_route():
         status = payment_details.get("status")
         if status == "authorized":
             session['user_email'] = user_email
+            session['payment_authorized'] = True
             return redirect(url_for('compra_certa'))
         else:
+            session['payment_authorized'] = False
             return redirect(url_for('compra_errada'))
     except Exception as e:
-        return str(e)
+        return render_template("error.html", message=str(e))
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

@@ -19,7 +19,8 @@
                 <i class="fas fa-eye eye-icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;" onclick="togglePasswordVisibility('login-password')"></i>
             </div>
             <div>
-                <button type="button" onclick="Login()">Login</button>
+                <button id="login-button" type="button" onclick="Login()">Login</button>
+                <div id="login-loading" class="loading-spinner" style="display: none;"></div>
             </div>
             <p>Não tem uma conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
         </form>

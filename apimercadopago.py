@@ -18,7 +18,7 @@ def verificar_pagamento(preapproval_id):
     if payment_response['status'] == 200:
         return payment_response['response']
     else:
-        raise Exception("Não foi possível encontrar o pagamento. Tente atualizar a página ou aguarde alguns minutos e volte.")
+        raise Exception("Não foi possível encontrar o pagamento. Provavelmente ainda está sendo processado.")
 
 
 

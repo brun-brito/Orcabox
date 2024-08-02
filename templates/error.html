@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='erro.png') }}" type="image/x-icon">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .error-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .error-solutions {
+            font-size: 14px;
+        }
+
+        .error-solutions ul {
+            padding-left: 20px;
+        }
+
+        .error-solutions li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-title">Erro</div>
+        <div class="error-message">{{ message }}</div>
+        <div class="error-solutions">
+            <p>Por favor, tente as soluções a seguir:</p>
+            <ul>
+                <li>Espere um pouco e atualize a página do navegador (tente algumas vezes).</li>
+                <li>Volte à página anterior e clique novamente no botão 'Voltar para o site'.</li>
+                <li>Se nenhuma dessas tentativas funcionar, entre em contato conosco enviando o comprovante.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

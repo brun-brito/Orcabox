@@ -14,7 +14,7 @@
         <h2>Formulário de Cadastro</h2>
         <form id="register-form">
             <input type="text" id="register-name" placeholder="Nome" required>
-            <input type="tel" id="register-phone" placeholder="Telefone com WhatsApp"  maxlength="11" required oninput="this.value = this.value.replace(/\D/g, '')">
+            <input type="tel" id="register-phone" placeholder="Telefone com WhatsApp" maxlength="11" required oninput="this.value = this.value.replace(/\D/g, '')">
             <input type="text" id="register-cpf" placeholder="CPF" required pattern="\d{11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '')">
             <input type="email" id="register-email" placeholder="Cadastre seu email" required>
             <div class="password-container" style="position: relative;">
@@ -26,7 +26,8 @@
                 <i class="fas fa-eye eye-icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;" onclick="togglePasswordVisibility('confirm-password')"></i>
             </div>
             <div>
-                <button type="button" onclick="Cadastrar()">Cadastrar</button>
+                <button id="register-button" type="button" onclick="Cadastrar()">Cadastrar</button>
+                <div id="register-loading" class="loading-spinner" style="display: none;"></div>
             </div>
             <p>Já tem uma conta? <a href="{{ url_for('index') }}">Faça login</a></p>
         </form>

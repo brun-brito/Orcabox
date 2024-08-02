@@ -17,7 +17,8 @@
             <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">Assinar Speaker</button>
         </div>
         <div>
-            <button type="button" class="button-logout" onclick="Logout()">Sair</button>
+            <button id="logout-button" type="button" class="button-logout" onclick="Logout()">Sair</button>
+            <div id="logout-loading" class="loading-spinner" style="display: none;"></div>
         </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>

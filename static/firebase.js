@@ -2,100 +2,127 @@ const firebaseConfig = {
     apiKey: "AIzaSyAQ4W6njoWW24qSBPTIZYBtuYTvnytg-uU",
     authDomain: "speaker-ia.firebaseapp.com",
     projectId: "speaker-ia",
-    storageBucket: "speaker-ia.appspot.com",
+    storageBucket: "speaker-ia",
     messagingSenderId: "1037488879323",
     appId: "1:1037488879323:web:f3692c4e9e7bcd80973efe"
 };
 
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const settings = {timestampsInSnapshots: true};
+const settings = { timestampsInSnapshots: true };
 db.settings(settings);
 
+function showLoading(buttonId, loadingId) {
+    document.getElementById(buttonId).style.display = "none";
+    document.getElementById(loadingId).style.display = "inline-block";
+}
+
+function hideLoading(buttonId, loadingId) {
+    document.getElementById(buttonId).style.display = "inline-block";
+    document.getElementById(loadingId).style.display = "none";
+}
+
 async function Cadastrar() {
-    const email = document.getElementById("register-email").value;
-    const password = document.getElementById("register-password").value;
-    const confirmPassword = document.getElementById("confirm-password").value;
-    const name = document.getElementById("register-name").value;
-    const phone = document.getElementById("register-phone").value;
-    const cpf = document.getElementById("register-cpf").value;
+    const buttonId = "register-button";
+    const loadingId = "register-loading";
+    showLoading(buttonId, loadingId);
+    try {
+        const email = document.getElementById("register-email").value;
+        const password = document.getElementById("register-password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+        const name = document.getElementById("register-name").value;
+        const phone = document.getElementById("register-phone").value;
+        const cpf = document.getElementById("register-cpf").value;
 
-    if (!validarCPF(cpf)) {
-        alert("O CPF informado é inválido.");
-        return false;
-    }
-    
-    const cpfExists = await verificaCpf(cpf);
-    if (cpfExists) {
-        alert("O CPF informado pertence a outro usuário.");
-        return false;
-    }
-    
-    const telefoneExists = await verificaTelefone(phone);
-    if(telefoneExists) {
-        alert("O telefone informado pertence a outro usuário.");
-        return false;
-    }
-    
-    if (password !== confirmPassword) {
-        alert("As senhas não coincidem");
-        return false;
-    }
+        if (!email || !password || !confirmPassword || !name || !phone || !cpf) {
+            alert("Por favor, preencha todos os campos obrigatórios.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
+        
+        if (!validarCPF(cpf)) {
+            alert("O CPF informado é inválido.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
 
-    if (password.length < 6) {
-        alert("A senha deve ter no mínimo 6 dígitos");
-        return false;
-    }
+        const cpfExists = await verificaCpf(cpf);
+        if (cpfExists) {
+            alert("O CPF informado pertence a outro usuário.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
 
-    let formattedPhone = '55' + phone.replace(/^(\d{2})9?/, '$1');
+        const telefoneExists = await verificaTelefone(phone);
+        if (telefoneExists) {
+            alert("O telefone informado pertence a outro usuário.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(function(userCredential) {
+        if (password !== confirmPassword) {
+            alert("As senhas não coincidem");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
+
+        if (password.length < 6) {
+            alert("A senha deve ter no mínimo 6 dígitos");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
+
+        let formattedPhone = '55' + phone.replace(/^(\d{2})9?/, '$1');
+
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
-        db.collection("usuarios").doc(formattedPhone).set({
+
+        await db.collection("usuarios").doc(formattedPhone).set({
             nome: name,
             telefone: phone,
             cpf: cpf,
             email: email,
             pagamento: false
-        })
-        .then(function() {
-            alert("Seus dados foram cadastrados com sucesso");
-            document.getElementById("register-form").reset();
-            window.location.href = "index";
-        })
-        .catch(function(error) {
-            handleFirestoreError(error);
         });
-    })
-    .catch(function(error) {
-        handleAuthError(error);
-    });
 
+        alert("Seus dados foram cadastrados com sucesso");
+        document.getElementById("register-form").reset();
+        window.location.href = "index";
+    } catch (error) {
+        handleFirestoreError(error);
+        hideLoading(buttonId, loadingId);
+    }
     return false;
 }
 
-function Login() {
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
+async function Login() {
+    const buttonId = "login-button";
+    const loadingId = "login-loading";
+    showLoading(buttonId, loadingId);
+    try {
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(function(userCredential) {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
         window.location.href = "/";
-    })
-    .catch(function(error) {
+    } catch (error) {
         handleAuthError(error);
-    });
-
+        hideLoading(buttonId, loadingId);
+    }
     return false;
 }
 
-function Logout() {
-    firebase.auth().signOut().then(function() {
+async function Logout() {
+    const buttonId = "logout-button";
+    const loadingId = "logout-loading";
+    showLoading(buttonId, loadingId);
+    try {
+        await firebase.auth().signOut();
         window.location.href = "/index";
-    }).catch(function(error) {
+    } catch (error) {
         alert("Falha ao fazer logout: " + error.message);
-    });
+        hideLoading(buttonId, loadingId);
+    }
 }
 
 function handleAuthError(error) {
