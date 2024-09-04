@@ -2,7 +2,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyAQ4W6njoWW24qSBPTIZYBtuYTvnytg-uU",
     authDomain: "speaker-ia.firebaseapp.com",
     projectId: "speaker-ia",
-    storageBucket: "speaker-ia",
+    storageBucket: "speaker-ia.appspot.com",
     messagingSenderId: "1037488879323",
     appId: "1:1037488879323:web:f3692c4e9e7bcd80973efe"
 };
@@ -144,7 +144,7 @@ function handleAuthError(error) {
             message = "Usuário não encontrado.";
             break;
         case 'auth/invalid-password':
-            message = "Senha incorreta.";
+            message = "Senha não permitida.";
             break;
         default:
             message = "Ocorreu um erro. Tente novamente.";
@@ -222,6 +222,7 @@ function togglePasswordVisibility(passwordFieldId) {
 }
 
 function checkUserPayment(email) {
+    showLoading('speaker-container', 'logout-loading');
     db.collection('usuarios').where('email', '==', email).get()
         .then((querySnapshot) => {
             if (!querySnapshot.empty) {
@@ -238,6 +239,9 @@ function checkUserPayment(email) {
         })
         .catch((error) => {
             console.log('Erro ao obter documento:', error);
+        })
+        .finally(() => {
+            hideLoading('speaker-container', 'logout-loading');
         });
 }
 
@@ -248,7 +252,7 @@ function showSpeakerAccessButton() {
     button.textContent = 'Clique para acessar o Speaker';
     button.className = 'button-speaker-access';
     button.onclick = function() {
-        window.location.href = 'https://wa.me/5531999722280';
+        window.open('https://wa.me/5531999722280', '_blank');
     };
     container.appendChild(button);
 }

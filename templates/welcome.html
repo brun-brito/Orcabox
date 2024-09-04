@@ -10,9 +10,9 @@
     <link rel="icon" href="{{ url_for('static', filename='microfone.png') }}" type="image/png">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="speaker-container" style="display: none;">
         <h2>Painel do Usuário</h2>
-        <div id="speaker-access-container"></div>
+        <div id="speaker-access-container"> <!-- aqui vai ficar o botao de assinar speaker--></div>
         <div>
             <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">Assinar Speaker</button>
         </div>
@@ -21,17 +21,27 @@
             <div id="logout-loading" class="loading-spinner" style="display: none;"></div>
         </div>
     </div>
+
+    <div id="loading-screen" class="loading-spinner" style="display: block;">
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
     <script src="{{ url_for('static', filename='firebase.js') }}"></script>
     <script>
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            checkUserPayment(user.email);
-        } else {
-            window.location.href = "/index";
+        function showContent() {
+            document.getElementById('speaker-container').style.display = 'block'; 
+            document.getElementById('loading-screen').style.display = 'none';
         }
-    });
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                showContent();
+                checkUserPayment(user.email);
+            } else {
+                window.location.href = "/index";
+            }
+        });
     </script> 
 </body>
 </html>
