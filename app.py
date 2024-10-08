@@ -30,12 +30,9 @@ def allowed_file(filename):
 # Função para salvar os produtos no Firestore com subcoleção
 def salvar_produtos_firestore(email, produtos):
     try:
-        # Obter referência ao documento do usuário (usando o email como ID)
         user_ref = db.collection('users').document(email)
 
-        # Salvar cada produto como um documento dentro da subcoleção 'produtos' do usuário
         for produto in produtos:
-            # Adiciona o produto na subcoleção 'produtos' do usuário
             produto_ref = user_ref.collection('produtos').add(produto)
             logging.info(f"Produto {produto['nome']} salvo na subcoleção 'produtos' com ID: {produto_ref}")
     except Exception as e:
