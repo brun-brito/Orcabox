@@ -1,16 +1,20 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyAQ4W6njoWW24qSBPTIZYBtuYTvnytg-uU",
-    authDomain: "speaker-ia.firebaseapp.com",
-    projectId: "speaker-ia",
-    storageBucket: "speaker-ia.appspot.com",
-    messagingSenderId: "1037488879323",
-    appId: "1:1037488879323:web:f3692c4e9e7bcd80973efe"
+var firebaseConfig = {
+    apiKey: "AIzaSyD1m_kBAFyv8FpT4WhGBgVO0LYCxvieMWw",
+    authDomain: "orcamentista-hof.firebaseapp.com",
+    projectId: "orcamentista-hof",
+    storageBucket: "orcamentista-hof.appspot.com",
+    messagingSenderId: "509852712447",
+    appId: "1:509852712447:web:c148f6535f12bafc657bca"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+
+// Adicionando o serviço de autenticação
+const auth = firebase.auth();  // Corrigido aqui
 const db = firebase.firestore();
 const settings = { timestampsInSnapshots: true };
 db.settings(settings);
+
 
 function showLoading(buttonId, loadingId) {
     document.getElementById(buttonId).style.display = "none";
@@ -30,66 +34,33 @@ async function Cadastrar() {
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
         const confirmPassword = document.getElementById("confirm-password").value;
-        const name = document.getElementById("register-name").value;
-        const phone = document.getElementById("register-phone").value;
-        const cpf = document.getElementById("register-cpf").value;
 
-        if (!email || !password || !confirmPassword || !name || !phone || !cpf) {
+        if (!email || !password || !confirmPassword) {
             alert("Por favor, preencha todos os campos obrigatórios.");
-            hideLoading(buttonId, loadingId);
-            return false;
-        }
-        
-        if (!validarCPF(cpf)) {
-            alert("O CPF informado é inválido.");
-            hideLoading(buttonId, loadingId);
-            return false;
-        }
-
-        const cpfExists = await verificaCpf(cpf);
-        if (cpfExists) {
-            alert("O CPF informado pertence a outro usuário.");
-            hideLoading(buttonId, loadingId);
-            return false;
-        }
-
-        const telefoneExists = await verificaTelefone(phone);
-        if (telefoneExists) {
-            alert("O telefone informado pertence a outro usuário.");
             hideLoading(buttonId, loadingId);
             return false;
         }
 
         if (password !== confirmPassword) {
-            alert("As senhas não coincidem");
+            alert("As senhas não coincidem.");
             hideLoading(buttonId, loadingId);
             return false;
         }
 
         if (password.length < 6) {
-            alert("A senha deve ter no mínimo 6 dígitos");
+            alert("A senha deve ter no mínimo 6 dígitos.");
             hideLoading(buttonId, loadingId);
             return false;
         }
 
-        let formattedPhone = '55' + phone.replace(/^(\d{2})9?/, '$1');
-
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
 
-        await db.collection("usuarios").doc(formattedPhone).set({
-            nome: name,
-            telefone: phone,
-            cpf: cpf,
-            email: email,
-            pagamento: false
-        });
-
-        alert("Seus dados foram cadastrados com sucesso");
+        alert("Seus dados foram cadastrados com sucesso.");
         document.getElementById("register-form").reset();
         window.location.href = "index";
     } catch (error) {
-        handleFirestoreError(error);
+        handleAuthError(error);
         hideLoading(buttonId, loadingId);
     }
     return false;
@@ -103,7 +74,7 @@ async function Login() {
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
 
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+        await auth.signInWithEmailAndPassword(email, password);
         window.location.href = "/";
     } catch (error) {
         handleAuthError(error);
@@ -111,24 +82,28 @@ async function Login() {
     }
     return false;
 }
-
 async function Logout() {
-    const buttonId = "logout-button";
+    const buttonId = "button-logout";
     const loadingId = "logout-loading";
-    showLoading(buttonId, loadingId);
+    const logoutButton = document.getElementById(buttonId);
+    logoutButton.disabled = true;
+    logoutButton.innerText = "Saindo...";
+
     try {
-        await firebase.auth().signOut();
+        await auth.signOut();
         window.location.href = "/index";
     } catch (error) {
         alert("Falha ao fazer logout: " + error.message);
-        hideLoading(buttonId, loadingId);
+        logoutButton.disabled = false;
+        logoutButton.innerText = "Sair";
     }
 }
+
 
 function handleAuthError(error) {
     let message;
     switch (error.code) {
-        case 'auth/email-already-exists':
+        case 'auth/email-already-in-use':
             message = "O email já está em uso por outra conta.";
             break;
         case 'auth/invalid-email':
@@ -143,143 +118,11 @@ function handleAuthError(error) {
         case 'auth/user-not-found':
             message = "Usuário não encontrado.";
             break;
-        case 'auth/invalid-password':
-            message = "Senha não permitida.";
+        case 'auth/wrong-password':
+            message = "Senha incorreta.";
             break;
         default:
             message = "Ocorreu um erro. Tente novamente.";
     }
     alert("Falha ao autenticar: " + message);
-}
-
-function handleFirestoreError(error) {
-    let message;
-    switch (error.code) {
-        case 'permission-denied':
-            message = "Permissão negada. Você não tem permissão para executar esta ação.";
-            break;
-        default:
-            message = "Erro ao salvar dados adicionais: " + error.message;
-    }
-    alert(message);
-}
-
-function validarCPF(cpf) {
-    cpf = cpf.replace(/[^\d]+/g, '');
-    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-
-    let soma = 0;
-    let resto;
-
-    for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
-    resto = (soma * 10) % 11;
-
-    if ((resto === 10) || (resto === 11)) resto = 0;
-    if (resto !== parseInt(cpf.substring(9, 10))) return false;
-
-    soma = 0;
-    for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
-    resto = (soma * 10) % 11;
-
-    if ((resto === 10) || (resto === 11)) resto = 0;
-    if (resto !== parseInt(cpf.substring(10, 11))) return false;
-
-    return true;
-}
-
-async function verificaCpf(cpf) {
-    try {
-        const querySnapshot = await db.collection('usuarios').where('cpf', '==', cpf).get();
-        return !querySnapshot.empty;
-    } catch (error) {
-        console.error("Erro ao verificar CPF: ", error);
-        return false;
-    }
-}
-
-async function verificaTelefone(telefone) {
-    try {
-        const querySnapshot = await db.collection('usuarios').where('telefone', '==', telefone).get();
-        return !querySnapshot.empty;
-    } catch (error) {
-        console.error("Erro ao verificar Telefone: ", error);
-        return false;
-    }
-}
-
-function togglePasswordVisibility(passwordFieldId) {
-    const passwordField = document.getElementById(passwordFieldId);
-    const eyeIcon = passwordField.nextElementSibling;
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-    } else {
-        passwordField.type = 'password';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-    }
-}
-
-function checkUserPayment(email) {
-    showLoading('speaker-container', 'logout-loading');
-    db.collection('usuarios').where('email', '==', email).get()
-        .then((querySnapshot) => {
-            if (!querySnapshot.empty) {
-                querySnapshot.forEach((doc) => {
-                    const userData = doc.data();
-                    if (userData.pagamento === true) {
-                        document.querySelector('.button-payment').style.display = 'none';
-                        showSpeakerAccessButton();
-                    }
-                });
-            } else {
-                console.log('Documento não encontrado!');
-            }
-        })
-        .catch((error) => {
-            console.log('Erro ao obter documento:', error);
-        })
-        .finally(() => {
-            hideLoading('speaker-container', 'logout-loading');
-        });
-}
-
-function showSpeakerAccessButton() {
-    const container = document.getElementById('speaker-access-container');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.textContent = 'Clique para acessar o Speaker';
-    button.className = 'button-speaker-access';
-    button.onclick = function() {
-        window.open('https://wa.me/5531999722280', '_blank');
-    };
-    container.appendChild(button);
-}
-
-function updatePaymentStatus(email) {
-    firebase.auth().onAuthStateChanged(function(user) {{
-        email = user.email;
-        console.log(`Atualizando status de pagamento para o email: ${email}`);
-        db.collection('usuarios').where('email', '==', email).get()
-        .then((querySnapshot) => {
-            if (!querySnapshot.empty) {
-                querySnapshot.forEach((doc) => {
-                    const userRef = db.collection('usuarios').doc(doc.id);
-                    userRef.update({ pagamento: true })
-                        .then(() => {
-                            console.log('Status de pagamento atualizado com sucesso');
-                        })
-                        .catch((error) => {
-                            console.error('Erro ao atualizar status de pagamento:', error);
-                        });
-                });
-            } else {
-                console.log('Documento não encontrado!');
-            }
-        })
-        .catch((error) => {
-            console.error('Erro ao obter documento:', error);
-        });
-    }});
 }

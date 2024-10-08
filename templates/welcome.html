@@ -4,44 +4,140 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speaker - Dashboard</title>
+    <title>Trader - Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="{{ url_for('static', filename='microfone.png') }}" type="image/png">
 </head>
 <body>
-    <div class="container" id="speaker-container" style="display: none;">
-        <h2>Painel do Usuário</h2>
-        <div id="speaker-access-container"> <!-- aqui vai ficar o botao de assinar speaker--></div>
-        <div>
-            <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">Assinar Speaker</button>
-        </div>
-        <div>
-            <button id="logout-button" type="button" class="button-logout" onclick="Logout()">Sair</button>
-            <div id="logout-loading" class="loading-spinner" style="display: none;"></div>
-        </div>
+    <div class="container">
+        <h2>Seja bem-vindo(a)!</h2>
+        <p>Aqui você pode baixar o modelo de planilha e fazer o upload do seu arquivo editado.</p>
+        
+        <button onclick="downloadModel()">Baixar Planilha Modelo</button>
+        
+        <!-- Formulário de upload -->
+        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="email" id="email">
+            <input type="file" name="planilha" id="file-upload" accept=".xlsx,.xls" required>
+            <button type="submit" id="upload-btn" disabled>Anexar Planilha</button>
+        </form>
+
+        <h3 id="produtos-header" style="display: none;">Produtos Cadastrados</h3>
+        <table id="produtos-table" border="1" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="produtos-body">
+                <!-- Produtos aparecerão aqui -->
+            </tbody>
+        </table>        
+    
+            <button id="button-logout" class="button-logout" onclick="Logout()">Sair</button>
     </div>
 
-    <div id="loading-screen" class="loading-spinner" style="display: block;">
-    </div>
+    
 
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
-    <script src="{{ url_for('static', filename='firebase.js') }}"></script>
+    <script src="{{ url_for('static', filename='firebase.js') }}"></script> 
+    <script src="{{ url_for('static', filename='crudProdutos.js') }}"></script> 
+
     <script>
-        function showContent() {
-            document.getElementById('speaker-container').style.display = 'block'; 
-            document.getElementById('loading-screen').style.display = 'none';
+        function downloadModel() {
+            window.location.href = '/download_model';
         }
 
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                showContent();
-                checkUserPayment(user.email);
-            } else {
-                window.location.href = "/index";
-            }
-        });
-    </script> 
+        window.onload = function() {
+            const produtosBody = document.getElementById('produtos-body');
+            const emailField = document.getElementById('email');
+            const produtosTable = document.getElementById('produtos-table');
+            const produtosHeader = document.getElementById('produtos-header');
+            const uploadBtn = document.getElementById('upload-btn');
+            const fileUpload = document.getElementById('file-upload');
+
+            // Verifica se o usuário está autenticado
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    emailField.value = user.email;  // Pega o email do usuário e insere no campo oculto
+
+                    // Pega os produtos do Firestore
+                    const db = firebase.firestore();
+                    const userRef = db.collection('users').doc(user.email).collection('produtos');
+
+                    // Busca os produtos do Firestore
+                    userRef.get().then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            // Exibe a tabela e o cabeçalho se houver produtos
+                            produtosTable.style.display = 'table';
+                            produtosHeader.style.display = 'block';
+
+                            querySnapshot.forEach((doc) => {
+                                const produto = doc.data();
+                                const produtoId = doc.id;  // ID do documento no Firestore
+                                const row = document.createElement('tr');
+                                
+                                row.innerHTML = `
+                                    <td>${produto.nome}</td>
+                                    <td>${produto.preco}</td>
+                                    <td>${produto.quantidade}</td>
+                                    <td>${produto.descricao}</td>
+                                    <td>${produto.categoria}</td>
+                                    <td>
+                                        <button class="edit-btn" data-id="${produtoId}">Editar</button>
+                                        <button class="delete-btn" data-id="${produtoId}">Apagar</button>
+                                    </td>
+                                `;
+                                produtosBody.appendChild(row);
+                            });
+
+                            // Adiciona o evento de clique para editar
+                            document.querySelectorAll('.edit-btn').forEach(button => {
+                                button.addEventListener('click', function() {
+                                    const produtoId = this.getAttribute('data-id');
+                                    editProduto(produtoId, this);
+                                });
+                            });
+                            
+                            // Adiciona o evento de clique para apagar
+                            document.querySelectorAll('.delete-btn').forEach(button => {
+                                button.addEventListener('click', function() {
+                                    const produtoId = this.getAttribute('data-id');
+                                    deleteProduto(produtoId, this);
+                                });
+                            });
+                        }
+                    }).catch((error) => {
+                        console.log("Erro ao carregar produtos: ", error);
+                    });
+                } else {
+                    // Redirecionar para login se o usuário não estiver autenticado
+                    window.location.href = "/index";
+                }
+            });
+
+            // Verifica se um arquivo foi anexado
+            fileUpload.addEventListener('change', function() {
+                if (fileUpload.files.length > 0) {
+                    // Se houver arquivo, muda o estilo do botão e habilita ele
+                    uploadBtn.classList.add('active');
+                    uploadBtn.disabled = false;
+                } else {
+                    // Se não houver arquivo, restaura o estilo padrão do botão
+                    uploadBtn.classList.remove('active');
+                    uploadBtn.disabled = true;
+                }
+            });
+        };
+
+         </script>
 </body>
 </html>

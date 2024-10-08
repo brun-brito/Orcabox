@@ -13,16 +13,17 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 350px;
+    width: 600px; /* Unificado para todas as .container */
     text-align: center;
 }
 
-.container h2 {
+h2 {
     font-size: 24px;
     margin-bottom: 20px;
 }
 
-.container input {
+.container input,
+textarea {
     width: calc(100% - 22px);
     padding: 10px;
     margin: 10px 0;
@@ -39,7 +40,6 @@ body {
 }
 
 .password-container input {
-    width: calc(100% - 40px);
     padding-right: 40px;
 }
 
@@ -59,7 +59,7 @@ body {
     font-size: 16px;
     margin-top: 10px;
     transition: background-color 0.3s, box-shadow 0.3s;
-    background-color: #28a745; 
+    background-color: #28a745;
 }
 
 .container button:hover {
@@ -67,8 +67,13 @@ body {
     box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
 }
 
+button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
 .button-logout {
-    background-color: #dc3545 !important; 
+    background-color: #dc3545 !important;
 }
 
 .button-logout:hover {
@@ -77,7 +82,7 @@ body {
 }
 
 .button-payment {
-    background-color: #17a2b8; 
+    background-color: #17a2b8;
 }
 
 .button-payment:hover {
@@ -99,23 +104,6 @@ body {
     text-decoration: underline;
 }
 
-.button-speaker-access {
-    background-color: rgba(0, 0, 255, 0.826) !important; 
-    color: white !important;;
-    padding: 12px !important;;
-    border: none !important;;
-    border-radius: 5px !important;;
-    cursor: pointer !important;;
-    font-size: 16px !important;;
-    margin-top: 10px !important;;
-    transition: background-color 0.3s, box-shadow 0.3s !important;;
-}
-
-.button-speaker-access:hover {
-    background-color: darkblue !important;;
-    box-shadow: 0 4px 8px rgba(0, 0, 139, 0.4) !important;;
-}
-
 .loading-spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-left-color: #09f;
@@ -125,14 +113,82 @@ body {
     animation: spin 1s linear infinite;
     display: inline-block;
     vertical-align: middle;
-  }
-  
-  @keyframes spin {
+}
+
+@keyframes spin {
     0% {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     100% {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  
+}
+
+#upload-btn {
+    background-color: grey;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: not-allowed;
+}
+
+#upload-btn.active {
+    background-color: #28a745;
+    cursor: pointer;
+}
+
+/* Estilo da tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f8f9fa;
+}
+
+td {
+    background-color: #ffffff;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+button.edit-btn, button.delete-btn {
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+}
+
+button.edit-btn {
+    background-color: #007bff;
+}
+
+button.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+button.delete-btn {
+    background-color: #dc3545;
+}
+
+button.delete-btn:hover {
+    background-color: #c82333;
+}
