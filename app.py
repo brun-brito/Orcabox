@@ -10,7 +10,7 @@ import logging
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'public/uploads')
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
