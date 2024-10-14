@@ -13,7 +13,7 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 600px;
+    width: 600px; /* Unificado para todas as .container */
     text-align: center;
 }
 
@@ -59,12 +59,12 @@ textarea {
     font-size: 16px;
     margin-top: 10px;
     transition: background-color 0.3s, box-shadow 0.3s;
-    background-color: #28a745;
+    background-color: #1976D2;
 }
 
 .container button:hover {
-    background-color: #218838;
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    background-color: #1976D2;
+    box-shadow: 0 4px 8px rgba(40, 53, 167, 0.4);
 }
 
 button:disabled {
@@ -86,8 +86,15 @@ button:disabled {
 }
 
 .button-payment:hover {
-    background-color: #138496;
-    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.4);
+    background-color: #1976D2;
+    box-shadow: 0 4px 8px rgba(4, 0, 250, 0.4);
+}
+
+.button-orcamento-access {
+    background-color: rgb(4, 185, 4) !important;
+}
+.button-orcamento-access:hover {
+    background-color: rgb(0, 126, 0) !important;
 }
 
 .container p {
@@ -134,7 +141,7 @@ button:disabled {
 }
 
 #upload-btn.active {
-    background-color: #28a745;
+    background-color: #1976D2;
     cursor: pointer;
 }
 

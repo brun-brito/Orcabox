@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <title>Cadastro de Profissional</title>
+    <link rel="stylesheet" href="../static/styleProfissional.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="{{ url_for('static', filename='fotos/microfone.png') }}" type="image/x-icon">
 </head>
 <body>
     <div class="container">
-        <h2>Formulário de Cadastro Distribuidores</h2>
+        <h2>Formulário de Cadastro Profissionais</h2>
         <form id="register-form">
-            <input type="text" id="register-fantasia" placeholder="Nome Fantasia" required>
+            <input type="text" id="register-nome" placeholder="Nome" required>
             <input type="text" id="register-number" placeholder="Número de WhatsApp" required maxlength="11" pattern="\d{11}">
             <input type="text" id="register-cep" placeholder="CEP" required maxlength="8" pattern="\d{8}">
-            <input type="text" id="register-insta" placeholder="@ do instagram" required>
             <input type="email" id="register-email" placeholder="Cadastre seu email" required>
             <div class="password-container" style="position: relative;">
                 <input type="password" id="register-password" placeholder="Cadastre sua senha" required>
@@ -26,12 +25,12 @@
                 <button id="register-button" type="button" onclick="Cadastrar()">Cadastrar</button>
                 <div id="register-loading" class="loading-spinner" style="display: none;"></div>
             </div>
-            <p>Já tem uma conta? <a href="{{ url_for('login_distribuidor') }}">Faça login</a></p>
         </form>
+        <p>Já tem uma conta? <a href="{{ url_for('login_profissional') }}">Faça login</a></p>
     </div>    
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
     <script src="{{ url_for('static', filename='firebase.js') }}"></script>
-    <script src="{{ url_for('static', filename='loginCadastro.js') }}"></script> 
+    <script src="{{ url_for('static', filename='cadastroProfissional.js') }}"></script> 
 </body>
 </html>

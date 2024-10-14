@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speaker - Login</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/styleProfissional.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="{{ url_for('static', filename='microfone.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='fotos/microfone.png') }}" type="image/x-icon">
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
+        <h2>Login Profissionais</h2>
         <form id="login-form">
             <input type="email" id="login-email" placeholder="Email" required>
             <div class="password-container" style="position: relative;">
@@ -22,11 +22,12 @@
                 <button id="login-button" type="button" onclick="Login()">Login</button>
                 <div id="login-loading" class="loading-spinner" style="display: none;"></div>
             </div>
-            <p>Não tem uma conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
+            <p>Não tem uma conta? <a href="{{ url_for('cadastro_profissional') }}">Cadastre-se</a></p>
         </form>
     </div>
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
-    <script src="../static/firebase.js"></script>
+    <script src="{{ url_for('static', filename='firebase.js') }}"></script> 
+    <script src="{{ url_for('static', filename='cadastroProfissional.js') }}"></script> 
 </body>
 </html>

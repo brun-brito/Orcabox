@@ -9,7 +9,7 @@ def processar_planilha(file_path):
         sheet = workbook.active  # Pega a primeira planilha
 
         # Defina as colunas esperadas
-        colunas_esperadas = ['Nome', 'Preço', 'Quantidade', 'Descrição', 'Categoria']
+        colunas_esperadas = ['Nome', 'Preço', 'Quantidade', 'Marca', 'Categoria']
         colunas = [cell.value for cell in sheet[1]]  # Primeira linha contém os nomes das colunas
 
         # Verifica se todas as colunas esperadas estão presentes
@@ -31,9 +31,10 @@ def processar_planilha(file_path):
             # Formatar dados como dicionário
             produto = {
                 'nome': nome,
+                'nome_lowercase': ''.join(nome.lower().split()),
                 'preco': float(preco),
                 'quantidade': int(quantidade),
-                'descricao': row[colunas.index('Descrição')],
+                'marca': row[colunas.index('Marca')],
                 'categoria': row[colunas.index('Categoria')]
             }
 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial - Bem-vindo à Nossa Plataforma</title>
+    <link rel="icon" href="{{ url_for('static', filename='fotos/microfone.png') }}" type="image/png">
+    <style>
+        /* Estilização geral */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .hero {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        .hero a {
+            text-decoration: none;
+            font-size: 16px;
+            padding: 15px 30px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .button-distribuidor {
+            background-color: #4CAF50; /* Verde para Distribuidores */
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-profissional {
+            background-color: #2196F3; /* Azul para Profissionais */
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-distribuidor:hover {
+            background-color: #45a049;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-profissional:hover {
+            background-color: #1976D2;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero a {
+                font-size: 14px;
+                padding: 12px 25px;
+                margin: 10px 0;
+            }
+
+            .hero {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="hero">
+            <h1>Bem-vindo(a) à Nossa Plataforma de Orçamentos!</h1>
+            <p>Conecte-se facilmente, escolha o perfil que melhor se encaixa para você.</p>
+            <div>
+                <a href="/login-distribuidor" class="button-distribuidor">Sou Distribuidor</a>
+                <a href="/login-profissional" class="button-profissional">Sou Profissional</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleProfissional.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='fotos/microfone.png') }}" type="image/png">
+</head>
+<body>
+    <div class="container" id="orcamento-container" style="display: none;">
+        <h2>Painel do Profissional</h2>
+        <div id="orcamento-access-container"> <!-- aqui vai ficar o botao de assinar orcamento--></div>
+        <div>
+            <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">Assinar assistente de orçamentos</button>
+        </div>
+        <div>
+            <button id="logout-button" type="button" class="button-logout" onclick="Logout()">Sair</button>
+            <div id="logout-loading" class="loading-spinner" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div id="loading-screen" class="loading-spinner" style="display: block;">
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
+    <script src="{{ url_for('static', filename='firebase.js') }}"></script>
+    <script src="{{ url_for('static', filename='profissional.js') }}"></script>
+    <script src="{{ url_for('static', filename='cadastroProfissional.js') }}"></script>
+    <script>
+        function showContent() {
+            document.getElementById('orcamento-container').style.display = 'block'; 
+            document.getElementById('loading-screen').style.display = 'none';
+        }
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                showContent();
+                checkUserPayment(user.email);
+            } else {
+                window.location.href = "/login-distribuidor";
+            }
+        });
+    </script> 
+</body>
+</html>

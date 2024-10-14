@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='fotos/verificar.png') }}" type="image/x-icon">
+    <title>Compra Aprovada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Compra Aprovada!</h2>
+        <p>Seu pagamento foi aprovado com sucesso.</p>
+        <a href="/welcome-profissional">Clique aqui para voltar ao perfil e acessar o Assistente de Orçamentos</a>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
+    <script src="{{ url_for('static', filename='firebase.js') }}"></script>
+    <script src="{{ url_for('static', filename='profissional.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const email = "{{ email }}";
+            if (email) {
+                updatePaymentStatus(email);
+            } else {
+                console.error('Email não encontrado na sessão');
+            }
+        });
+    </script>
+</body>
+</html>
