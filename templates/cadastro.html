@@ -13,7 +13,26 @@
     <div class="container">
         <h2>Formulário de Cadastro Distribuidores</h2>
         <form id="register-form">
-            <input type="text" id="register-fantasia" placeholder="Nome Fantasia" required>
+            <select id="tipo-pessoa" required onchange="togglePessoaFields()">
+                <option value="" disabled selected>Selecione o tipo de pessoa</option>
+                <option value="PF">Pessoa Física</option>
+                <option value="PJ">Pessoa Jurídica</option>
+            </select>
+            <div id="nome-completo-field" style="display: none;">
+                <input type="text" id="register-nome-completo" placeholder="Nome Completo" maxlength="100">
+            </div>
+            <div id="cpf-field" style="display: none;">
+                <input type="text" id="register-cpf" placeholder="CPF" maxlength="11" pattern="\d{11}">
+            </div>
+            <div id="cnpj-field" style="display: none;">
+                <input type="text" id="register-cnpj" placeholder="CNPJ" maxlength="14" pattern="\d{14}" oninput="autoVerifyCNPJ()">
+            </div>
+            <div id="razao-field" style="display: none;">
+                <input type="text" id="register-razao" placeholder="Razão Social" readonly disabled>
+            </div>
+            <div id="fantasia-field" style="display: none;">
+                <input type="text" id="register-fantasia" placeholder="Nome Fantasia" readonly disabled>
+            </div>
             <input type="text" id="register-number" placeholder="Número de WhatsApp" required maxlength="11" pattern="\d{11}">
             <input type="text" id="register-cep" placeholder="CEP" required maxlength="8" pattern="\d{8}">
             <input type="text" id="register-insta" placeholder="@ do instagram" required>
@@ -28,7 +47,7 @@
             </div>
             <p>Já tem uma conta? <a href="{{ url_for('login_distribuidor') }}">Faça login</a></p>
         </form>
-    </div>    
+    </div>      
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
     <script src="{{ url_for('static', filename='firebase.js') }}"></script>

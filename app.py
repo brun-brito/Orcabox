@@ -16,10 +16,6 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
-# cred_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'firebaseKey.json')
-# cred = credentials.Certificate(cred_path)
-# firebase_admin.initialize_app(cred)
-# db = firestore.client()
 load_dotenv()
 
 firebase_key_json = os.getenv('FIREBASE_CREDENTIALS')

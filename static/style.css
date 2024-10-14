@@ -3,18 +3,22 @@ body {
     background-color: #f4f4f4;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .container {
     background-color: #fff;
-    padding: 30px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     text-align: center;
+    overflow-x: auto;
 }
 
 h2 {
@@ -143,6 +147,8 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    overflow-x: auto; 
+    display: block;
 }
 
 th, td {
@@ -191,4 +197,67 @@ button.delete-btn {
 
 button.delete-btn:hover {
     background-color: #c82333;
+}
+
+#cpf-field, #nome-completo-field, #cnpj-field {
+    display: none;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    appearance: none; /* Remove a aparência padrão do select */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 viewBox%3D%220 0 4 5%22%3E%3Cpath fill%3D%22%23444444%22 d%3D%22M2 0L0 2h4zM2 5L0 3h4z%22/%3E%3C/svg%3E'); /* Ícone de seta */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .container input,
+    textarea {
+        font-size: 14px;
+    }
+
+    .container button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .container p {
+        font-size: 12px;
+    }
+
+    table {
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
+
+    th, td {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    button.edit-btn, button.delete-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
 }

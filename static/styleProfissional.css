@@ -199,3 +199,33 @@ button.delete-btn {
 button.delete-btn:hover {
     background-color: #c82333;
 }
+
+/* Estilizando o combobox */
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    appearance: none; /* Remove a aparência padrão do select */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 viewBox%3D%220 0 4 5%22%3E%3Cpath fill%3D%22%23444444%22 d%3D%22M2 0L0 2h4zM2 5L0 3h4z%22/%3E%3C/svg%3E'); /* Ícone de seta */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+/* Estilo para o combobox no hover */
+select:hover {
+    border-color: #1976D2;
+}
+
+/* Estilo para o combobox ao focar */
+select:focus {
+    outline: none;
+    border-color: #1976D2;
+    box-shadow: 0 0 5px rgba(25, 118, 210, 0.5);
+}

@@ -16,11 +16,24 @@
             <input type="text" id="register-nome" placeholder="Nome" required>
             <input type="text" id="register-number" placeholder="Número de WhatsApp" required maxlength="11" pattern="\d{11}">
             <input type="text" id="register-cep" placeholder="CEP" required maxlength="8" pattern="\d{8}">
+            <input type="text" id="register-cpf" placeholder="CPF" required maxlength="11" pattern="\d{11}">
+            <select id="register-especialidade">
+                <option value="" disabled selected>Selecione seu conselho</option>
+                <option value="Biomedicina">Biomedicina</option>
+                <option value="Enfermagem">Enfermagem</option>
+                <option value="Farmácia">Farmácia</option>
+                <option value="Fisioterapia">Fisioterapia</option>
+                <option value="Medicina">Medicina</option>
+                <option value="Odontologia">Odontologia</option>
+            </select>            
+            <input type="text" id="register-uf" placeholder="UF conselho" required maxlength="2" pattern="[A-Za-z]{2}">
+            <input type="text" id="register-numero-conselho" placeholder="Número de Conselho" required>
             <input type="email" id="register-email" placeholder="Cadastre seu email" required>
             <div class="password-container" style="position: relative;">
                 <input type="password" id="register-password" placeholder="Cadastre sua senha" required>
                 <i class="fas fa-eye eye-icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;" onclick="togglePasswordVisibility('register-password')"></i>
             </div>
+
             <div>
                 <button id="register-button" type="button" onclick="Cadastrar()">Cadastrar</button>
                 <div id="register-loading" class="loading-spinner" style="display: none;"></div>

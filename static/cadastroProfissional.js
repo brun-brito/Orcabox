@@ -19,9 +19,13 @@ async function Cadastrar() {
         const cep = document.getElementById("register-cep").value;
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
+        const cpf = document.getElementById("register-cpf").value;
+        const uf = document.getElementById("register-uf").value;
+        const especialidade = document.getElementById("register-conselho").value;
+        const numeroConselho = document.getElementById("register-numero-conselho").value;
 
         // Validações básicas
-        if (!email || !password || !nome || !telefone || !cep) {
+        if (!email || !password || !nome || !telefone || !cep || !cpf || !uf || !especialidade || !numeroConselho) {
             alert("Por favor, preencha todos os campos.");
             hideLoading(buttonId, loadingId);
             return false;
@@ -37,7 +41,19 @@ async function Cadastrar() {
             alert("O número de CEP deve conter exatamente 8 números.");
             hideLoading(buttonId, loadingId);
             return false;
-        }   
+        }
+
+        if (!/^\d{11}$/.test(cpf) || !validarCPF(cpf)) {
+            alert("CPF inválido. Verifique o número e tente novamente.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
+
+        if (!/^[A-Za-z]{2}$/.test(uf)) {
+            alert("UF inválida. A UF deve ser composta por duas letras.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
 
         const telefoneExists = await verificaTelefone(telefone);
         if (telefoneExists) {
@@ -62,6 +78,10 @@ async function Cadastrar() {
             telefone: formattedPhone,
             cep: cep,
             email: email,
+            cpf: cpf,
+            uf: uf,
+            especialidade: especialidade,
+            numeroConselho: numeroConselho,
             pagamento: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -107,7 +127,6 @@ async function Login() {
     return false;
 }
 
-
 async function Logout() {
     const buttonId = "logout-button";
     const loadingId = "logout-loading";
@@ -133,6 +152,34 @@ async function verificaTelefone(telefone) {
         console.error("Erro ao verificar telefone: ", error);
         return false;
     }
+}
+
+function validarCPF(cpf) {
+    cpf = cpf.replace(/[^\d]+/g,'');
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+        return false;
+    }
+
+    let soma = 0;
+    let resto;
+    
+    for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+    
+    soma = 0;
+
+    for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+    
+    return true;
 }
 
 function togglePasswordVisibility(passwordFieldId) {

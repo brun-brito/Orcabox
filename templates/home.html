@@ -16,8 +16,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             text-align: center;
+            box-sizing: border-box;
+            overflow-x: hidden; /* Evita rolagem horizontal */
         }
 
         .hero {
@@ -26,7 +28,8 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             padding: 40px;
             max-width: 600px;
-            width: 100%;
+            width: 90%; /* Torna o conteúdo responsivo */
+            margin: 0 auto; /* Centraliza a div no corpo */
         }
 
         .hero h1 {
@@ -88,6 +91,21 @@
 
             .hero {
                 padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero a {
+                font-size: 16px;
+                padding: 10px 20px;
             }
         }
     </style>
