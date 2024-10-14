@@ -84,19 +84,29 @@ async function Login() {
     const buttonId = "login-button";
     const loadingId = "login-loading";
     showLoading(buttonId, loadingId);
+    
     try {
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
+        const profissionaisRef = db.collection('profissionais');
+        const snapshot = await profissionaisRef.where('email', '==', email).limit(1).get();
 
-        await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = "/welcome-profissional";
-        // ADICIONAR A ROTA CERTA
+        if (!snapshot.empty) {
+            await auth.signInWithEmailAndPassword(email, password);
+            window.location.href = "/welcome-profissional";
+        } else {
+            alert("Este e-mail não pertence à categoria de profissionais.");
+            hideLoading(buttonId, loadingId);
+        }
+
     } catch (error) {
         handleAuthError(error);
         hideLoading(buttonId, loadingId);
     }
+
     return false;
 }
+
 
 async function Logout() {
     const buttonId = "logout-button";

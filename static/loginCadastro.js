@@ -95,9 +95,16 @@ async function Login() {
     try {
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
+        const distribuidoresRef = db.collection('distribuidores');
+        const snapshot = await distribuidoresRef.where('email', '==', email).limit(1).get();
 
-        await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = "/welcome";
+        if (!snapshot.empty) {
+            await auth.signInWithEmailAndPassword(email, password);
+            window.location.href = "/welcome";
+        } else {
+            alert("Este e-mail não pertence à categoria de distribuidores.");
+            hideLoading(buttonId, loadingId);
+        }
     } catch (error) {
         handleAuthError(error);
         hideLoading(buttonId, loadingId);
