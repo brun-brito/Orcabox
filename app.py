@@ -6,6 +6,8 @@ from services.planilha_service import processar_planilha
 import firebase_admin
 from firebase_admin import credentials, firestore
 import logging
+import json
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -14,11 +16,16 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
-cred_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'firebaseKey.json')
-cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred)
+# cred_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'firebaseKey.json')
+# cred = credentials.Certificate(cred_path)
+# firebase_admin.initialize_app(cred)
+# db = firestore.client()
+load_dotenv()
 
-# Inicializando o Firestore
+firebase_key_json = os.getenv('FIREBASE_CREDENTIALS')
+cred_data = json.loads(firebase_key_json)
+cred = credentials.Certificate(cred_data)
+firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # Configurando logs
