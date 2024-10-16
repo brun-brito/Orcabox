@@ -3,22 +3,17 @@ body {
     background-color: #f4f4f4;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
+    align-items: center;
+    height: 100vh;
 }
 
 .container {
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
+    width: 600px; /* Unificado para todas as .container */
     text-align: center;
-    overflow-x: auto;
 }
 
 h2 {
@@ -260,4 +255,22 @@ select {
         font-size: 12px;
     }
 
+}
+
+.fatura-section {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+.fatura-section h3 {
+    margin: 0 0 10px 0;
+}
+.fatura-section p {
+    margin: 5px 0;
+}
+
+#valor-fatura{
+    color: green;
+    font-weight: bold;
 }

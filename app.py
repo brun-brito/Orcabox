@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'public/uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 

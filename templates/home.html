@@ -4,45 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Inicial - Bem-vindo à Nossa Plataforma</title>
-    <link rel="icon" href="{{ url_for('static', filename='fotos/microfone.png') }}" type="image/png">
+    <link rel="icon" href="{{ url_for('static', filename='fotos/logo.png') }}" type="image/png">
     <style>
-        /* Estilização geral */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #f3f4f6;
-            color: #333;
+            background: linear-gradient(135deg, #1d1f36, #0a0b1a);
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             text-align: center;
-            box-sizing: border-box;
-            overflow-x: hidden; /* Evita rolagem horizontal */
         }
 
         .hero {
-            background-color: #ffffff;
+            background-color: #2b2f3e;
             border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             padding: 40px;
             max-width: 600px;
-            width: 90%; /* Torna o conteúdo responsivo */
-            margin: 0 auto; /* Centraliza a div no corpo */
+            width: 90%;
+            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo-image {
+            max-width: 200px;
+            margin-bottom: 30px;
         }
 
         .hero h1 {
             font-size: 36px;
             margin-bottom: 20px;
-            color: #333;
-            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .hero p {
             font-size: 18px;
             margin-bottom: 30px;
-            color: #666;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .hero a {
@@ -50,31 +51,41 @@
             font-size: 16px;
             padding: 15px 30px;
             border-radius: 5px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
             margin: 0 10px;
             display: inline-block;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .button-distribuidor {
-            background-color: #4CAF50; /* Verde para Distribuidores */
+            background: linear-gradient(45deg, #2e8b57, #3cb371); /* Verde para distribuidores */
             color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .button-profissional {
-            background-color: #2196F3; /* Azul para Profissionais */
+            background: linear-gradient(45deg, #1e90ff, #00bfff); /* Azul para profissionais */
             color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .button-distribuidor:hover {
-            background-color: #45a049;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
         .button-profissional:hover {
-            background-color: #1976D2;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
         /* Responsividade */
@@ -113,6 +124,7 @@
 <body>
     <main>
         <section class="hero">
+            <img src="{{ url_for('static', filename='fotos/logoOrcabox.png') }}" alt="Logo Orcabox" class="logo-image">
             <h1>Bem-vindo(a) à Nossa Plataforma de Orçamentos!</h1>
             <p>Conecte-se facilmente, escolha o perfil que melhor se encaixa para você.</p>
             <div>
