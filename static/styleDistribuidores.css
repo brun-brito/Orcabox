@@ -16,7 +16,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px;
+    max-width: 850px;
     text-align: center;
     overflow-x: auto;
 }
@@ -54,7 +54,6 @@ textarea {
 }
 
 .container button {
-    width: 100%;
     padding: 12px;
     border: none;
     color: #fff;
@@ -80,7 +79,12 @@ button.active {
     background-color: #28a745;
 }
 
-.button-logout, .cancel-btn {
+.button-logout {
+    width: 50%;
+    background-color: #dc3545 !important;
+}
+
+.cancel-btn, .cancel-product-btn {
     background-color: #dc3545 !important;
 }
 
@@ -123,6 +127,29 @@ button.active {
     vertical-align: middle;
 }
 
+.download-planilha {
+    background-color: #007bff !important;
+    font-weight: bold;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.download-planilha i {
+    font-size: 20px;
+    text-align: center;
+}
+
+.download-planilha:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Leve zoom ao passar o mouse */
+}
+
+.download-planilha:active {
+    transform: scale(0.98); /* Redução ao clicar */
+}
+
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -148,11 +175,24 @@ button.active {
 
 /* Estilo da tabela */
 table {
-    width: 100%;
+    width: 100%; /* Preenche o espaço necessário */
     border-collapse: collapse;
-    margin-top: 20px;
-    overflow-x: auto; 
-    display: block;
+    table-layout: auto; /* Força as células a terem um tamanho fixo */
+}
+
+
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.table-wrapper {
+    max-width: 100%;
+    margin-top: 10px;
 }
 
 th, td {
@@ -168,13 +208,17 @@ th {
 
 td {
     background-color: #ffffff;
-    word-break: keep-all;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    word-wrap: break-word; 
+    overflow: visible; 
+    white-space: nowrap;
 }
 
 tr:hover {
     background-color: #f1f1f1;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
 
 button.edit-btn, button.delete-btn {
@@ -184,7 +228,10 @@ button.edit-btn, button.delete-btn {
     border-radius: 5px;
     cursor: pointer;
     color: white;
-    font-size: 14px;
+}
+
+#add-product-btn {
+    margin: 0 0 10px 0 ;
 }
 
 button.edit-btn {
@@ -228,40 +275,73 @@ select {
 @media (max-width: 768px) {
     .container {
         display: flex;
-        flex-direction: column; /* Organiza os itens em coluna */
-        align-items: center;    /* Centraliza horizontalmente */
-        justify-content: flex-start; /* Garante que os itens comecem de cima */
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
         width: 100%;
-        max-width: 100%;  /* Garante que a largura ocupe toda a tela */
+        max-width: 100%;
         padding: 15px;
         box-sizing: border-box;
     }
 
-    /* Garantir que a tabela fique visível e com rolagem horizontal */
-    table {
-        width: 100%; /* Tabela ocupa toda a largura disponível */
-        display: block; /* Permitir o scroll horizontal */
-        overflow-x: auto; /* Habilitar a rolagem horizontal se necessário */
+    .table-wrapper {
+        overflow-x: auto; /* Ativa a rolagem horizontal */
+        position: relative;
+        border-bottom: 2px solid #333; /* Linha mais visível */
+        padding-bottom: 10px;
+        margin-bottom: 10px;
     }
 
-    /* Ajuste nas células da tabela para ficarem mais compactas */
+    /* Barra de rolagem mais visível */
+    .table-wrapper::-webkit-scrollbar {
+        height: 16px; /* Aumenta a altura */
+        background-color: #e0e0e0; /* Fundo mais visível */
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background-color: #007bff;
+        border-radius: 8px;
+        border: 3px solid #e0e0e0; /* Espaçamento para destaque */
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background-color: #0056b3;
+    }
+
+    /* Indicador de rolagem claro */
+    .table-wrapper::after {
+        content: 'Deslize para o lado →';
+        position: absolute;
+        right: 50%;
+        bottom: -20px;
+        transform: translateX(50%);
+        font-size: 14px;
+        color: #666;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 4px 8px;
+        border-radius: 8px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+        pointer-events: none;
+        animation: fadeInOut 2s infinite;
+    }
+
+    /* Animação para o indicador de rolagem */
+    @keyframes fadeInOut {
+        0%, 100% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+
     th, td {
-        padding: 8px;
-        font-size: 12px;
-    }
-
-    /* Centralizar o texto dentro da tabela */
-    th, td {
+        padding: 12px;
+        font-size: 14px;
         text-align: center;
+        white-space: nowrap; /* Impede quebra de linha */
     }
 
-    /* Alinhamento dos itens acima e abaixo da tabela */
-    h2, p, .fatura-section, form, button {
-        width: 100%;
-        text-align: center;
-    }
-
-    /* Ajustar o botão de logout para dispositivos móveis */
     .button-logout {
         width: 100%;
         margin-top: 20px;

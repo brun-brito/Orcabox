@@ -4,21 +4,19 @@ function editProduto(produtoId, button) {
 
     // Pega os valores originais antes da edição
     const originalValues = {
-        nome: cells[0].textContent.trim(),
         preco: !isNaN(parseFloat(cells[1].textContent)) ? parseFloat(cells[1].textContent) : 0,
-        quantidade: !isNaN(parseInt(cells[2].textContent)) ? parseInt(cells[2].textContent) : 0,
-        marca: cells[3].textContent.trim(),
-        categoria: cells[4].textContent.trim()
+        quantidade: !isNaN(parseInt(cells[2].textContent)) ? parseInt(cells[2].textContent) : 0
     };
 
-    // Substitui o texto por campos de entrada para editar os dados
-    cells[0].innerHTML = `<textarea id="edit-nome" required>${originalValues.nome}</textarea>`;
+    // Substitui apenas os campos de preço e quantidade por áreas de edição
     cells[1].innerHTML = `<textarea id="edit-preco" required>${originalValues.preco.toFixed(2)}</textarea>`;
     cells[2].innerHTML = `<textarea id="edit-quantidade" required>${originalValues.quantidade}</textarea>`;
-    cells[3].innerHTML = `<textarea id="edit-marca" required>${originalValues.marca}</textarea>`;
-    cells[4].innerHTML = `<textarea id="edit-categoria" required>${originalValues.categoria}</textarea>`;
+    
+    const editPrecoField = document.getElementById('edit-preco');
+    editPrecoField.addEventListener('input', function () {
+        this.value = this.value.replace(',', '.');
+    });
 
-    // Adiciona botões "Salvar" e "Cancelar"
     const actionCell = cells[5];
     actionCell.innerHTML = `
         <button class="save-btn">Salvar</button>
@@ -31,11 +29,8 @@ function editProduto(produtoId, button) {
         console.log('Edição cancelada.');
 
         // Restaura os valores originais na linha
-        cells[0].textContent = originalValues.nome;
         cells[1].textContent = originalValues.preco.toFixed(2);
         cells[2].textContent = originalValues.quantidade;
-        cells[3].textContent = originalValues.marca;
-        cells[4].textContent = originalValues.categoria;
 
         // Volta os botões "Editar" e "Apagar"
         actionCell.innerHTML = `
@@ -43,7 +38,7 @@ function editProduto(produtoId, button) {
             <button class="delete-btn">Apagar</button>
         `;
 
-        // Reatribui os eventos aos botões de "Editar" e "Apagar"
+        // Reatribui os eventos aos botões
         const editButton = row.querySelector('.edit-btn');
         editButton.addEventListener('click', function () {
             editProduto(produtoId, editButton);
@@ -59,30 +54,21 @@ function editProduto(produtoId, button) {
     const saveButton = row.querySelector('.save-btn');
     saveButton.addEventListener('click', function handleSaveClick() {
         const updatedProduto = {
-            nome: document.getElementById('edit-nome').value.trim(),
             preco: parseFloat(document.getElementById('edit-preco').value),
-            quantidade: parseInt(document.getElementById('edit-quantidade').value),
-            marca: document.getElementById('edit-marca').value.trim(),
-            categoria: document.getElementById('edit-categoria').value.trim(),
-            nome_lowercase: document.getElementById('edit-nome').value.trim().toLowerCase().replace(/\s+/g, '')
+            quantidade: parseInt(document.getElementById('edit-quantidade').value)
         };
 
         // Validação dos campos
-        if (
-            !updatedProduto.nome || 
-            updatedProduto.preco < 0 || 
-            isNaN(updatedProduto.preco) || 
-            updatedProduto.quantidade < 0 || 
-            isNaN(updatedProduto.quantidade) || 
-            !updatedProduto.marca || 
-            !updatedProduto.categoria
-        ) {
-            alert("Todos os campos devem ser preenchidos corretamente. Preço e quantidade não podem ser negativos ou nulos.");
+        if (updatedProduto.preco < 0 || isNaN(updatedProduto.preco) || 
+            updatedProduto.quantidade < 0 || isNaN(updatedProduto.quantidade)) {
+            alert("Preço e quantidade não podem ser negativos ou nulos.");
             return;
         }
 
         // Verifica se algo foi alterado
-        const changesMade = Object.keys(updatedProduto).some(key => updatedProduto[key] !== originalValues[key]);
+        const changesMade = 
+            updatedProduto.preco !== originalValues.preco || 
+            updatedProduto.quantidade !== originalValues.quantidade;
 
         if (changesMade) {
             const db = firebase.firestore();
@@ -97,11 +83,8 @@ function editProduto(produtoId, button) {
                     // Atualiza o produto no Firestore
                     produtoRef.update(updatedProduto).then(() => {
                         // Atualiza a linha da tabela com os novos valores
-                        cells[0].textContent = updatedProduto.nome;
                         cells[1].textContent = updatedProduto.preco.toFixed(2);
                         cells[2].textContent = updatedProduto.quantidade;
-                        cells[3].textContent = updatedProduto.marca;
-                        cells[4].textContent = updatedProduto.categoria;
 
                         // Volta os botões "Editar" e "Apagar"
                         actionCell.innerHTML = `
@@ -181,19 +164,11 @@ function mostrarLoading() {
 document.addEventListener('DOMContentLoaded', function () {
     const addProductButton = document.getElementById('add-product-btn');
     const produtosBody = document.getElementById('produtos-body');
-    const produtosTable = document.getElementById('produtos-table'); // Certificando-se de que a tabela seja manipulada corretamente
+    const produtosTable = document.getElementById('produtos-table');
 
-    // Verifica se o botão existe e adiciona o evento de clique
     if (addProductButton) {
-        console.log('Botão "Adicionar Produto" encontrado, aguardando clique.');
-
         addProductButton.addEventListener('click', function () {
-            console.log('Botão "Adicionar Produto" clicado.');
-
-            // Garante que a tabela e o corpo da tabela estejam visíveis
             produtosTable.style.display = 'table';
-
-            // Cria uma nova linha para inserir o produto manualmente
             const newRow = document.createElement('tr');
 
             newRow.innerHTML = `
@@ -208,16 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 </td>
             `;
 
-            // Adiciona a nova linha no corpo da tabela
-            produtosBody.appendChild(newRow);
-            console.log('Nova linha adicionada à tabela.');
-
+            produtosBody.insertBefore(newRow, produtosBody.firstChild);
             // Botão "Cancelar" remove a linha sem salvar
             newRow.querySelector('.cancel-product-btn').addEventListener('click', function () {
                 console.log('Cancelando adição de produto.');
                 newRow.remove();
 
-                // Se não houver mais produtos, esconde a tabela novamente
                 if (produtosBody.children.length === 0) {
                     produtosTable.style.display = 'none';
                 }
@@ -258,7 +229,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             const distribuidorDoc = querySnapshot.docs[0];
                             const userRef = distribuidorDoc.ref.collection('produtos');
 
-                            // Adiciona o produto ao Firestore
                             return userRef.add(produto);
                         } else {
                             throw new Error("Distribuidor não encontrado.");

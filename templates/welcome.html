@@ -4,27 +4,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trader - Dashboard</title>
+    <title>Dashboard distribuidor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styleDistribuidores.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="{{ url_for('static', filename='fotos/logo.png') }}" type="image/png">
 </head>
 <body style="height: 100%; margin: 20px 0 20px 0;">
     <div class="container">
-        <h2 id="welcome-message">Seja bem-vindo(a)!</h2>
-        <p>Aqui você pode baixar o modelo de planilha e fazer o upload do seu arquivo editado.</p>
-        
-        <button onclick="downloadModel()">Baixar Planilha Modelo</button>
-        
-        <!-- Formulário de upload -->
-        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" onsubmit="mostrarLoading();">
-            <input type="hidden" name="email" id="email">
-            <input type="file" name="planilha" id="file-upload" accept=".xlsx,.xls" required>
-            <button type="submit" id="upload-btn" disabled>
-                <span id="upload-text">Anexar Planilha</span>
-                <span id="upload-spinner" class="loading-spinner" style="display: none;"></span>
-            </button>
-        </form>        
+        <div class="secao-planilha">    
+            <h2 id="welcome-message">Seja bem-vindo(a)!</h2>
+            <p>Aqui você pode baixar nosso modelo pronto de planilha, com produtos pré-cadastrados, editar com os valores e quantidades que quiser, e depois anexar a planilha para inserir os produtos que você deseja.</p>
+            
+            <button class="download-planilha" onclick="downloadModel()">
+                <i class="fas fa-download"></i> Baixar Planilha Modelo
+            </button>            
+            
+            <!-- Formulário de upload -->
+            <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" onsubmit="mostrarLoading();">
+                <input type="hidden" name="email" id="email">
+                <input type="file" name="planilha" id="file-upload" accept=".xlsx,.xls" required>
+                <button type="submit" id="upload-btn" disabled>
+                    <i class="fas fa-upload"></i> <!-- Ícone de upload -->
+                    <span id="upload-text">Submeter Planilha</span>
+                    <span id="upload-spinner" class="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> <!-- Ícone de carregamento animado -->
+                    </span>
+                </button>
+            </form>        
+        </div>
 
         <div class="fatura-section">
             <h3>Fatura estimada</h3>
@@ -32,28 +39,36 @@
             <p>Valor estimado: <span id="valor-fatura">R$0.00</span></p>
         </div>
         
-        <h3 id="produtos-header" >Produtos Cadastrados</h3>
+        <p>Ou se preferir, pode adicionar produtos individualmente, clicando no botão abaixo:</p>
+        <button id="add-product-btn">
+            <i class="fas fa-plus-circle"></i>
+            Adicionar Produto
+        </button>
+
+        <h3 id="produtos-header">Produtos Cadastrados</h3>
         <p id="mensagem-sem-produto" style="display: none;"></p>
-        <table id="produtos-table" border="1" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Preço</th>
-                    <th>Quantidade</th>
-                    <th>Marca</th>
-                    <th>Categoria</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="produtos-body">
-                <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
-                <!-- Produtos aparecerão aqui -->
-            </tbody>
-        </table>
-        
-        <button id="add-product-btn">Adicionar Produto</button>
-        
+
+        <div class="table-wrapper">
+            <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
+            <table id="produtos-table" border="1" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Quantidade</th>
+                        <th>Marca</th>
+                        <th>Categoria</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="produtos-body">
+                    <!-- As linhas dos produtos aparecerão aqui -->
+                </tbody>
+            </table>
+        </div>
+        <br>
         <button id="button-logout" class="button-logout" onclick="Logout()">Sair</button>
+
     </div>
 
     
@@ -117,8 +132,7 @@
                             // Busca os produtos do Firestore
                             userRef.get().then((querySnapshot) => {
                                 if (!querySnapshot.empty) {
-                                    // Exibe a tabela e o cabeçalho se houver produtos
-                                    produtosTable.style.display = 'table';
+                                    produtosTable.style.display = '';
                                     produtosHeader.style.display = 'block';
 
                                     querySnapshot.forEach((doc) => {
