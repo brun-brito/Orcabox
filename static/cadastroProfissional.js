@@ -21,7 +21,7 @@ async function Cadastrar() {
         const password = document.getElementById("register-password").value;
         const cpf = document.getElementById("register-cpf").value;
         const uf = document.getElementById("register-uf").value;
-        const especialidade = document.getElementById("register-conselho").value;
+        const especialidade = document.getElementById("register-especialidade").value;
         const numeroConselho = document.getElementById("register-numero-conselho").value;
 
         // Validações básicas
