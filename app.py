@@ -37,8 +37,10 @@ def salvar_produtos_firestore(email, produtos):
         distribuidores_ref = db.collection('distribuidores')
         query = distribuidores_ref.where('email', '==', email).limit(1).get()
 
-        if query:
-            user_ref = query[0].reference
+        if not query:
+            raise ValueError("Distribuidor não encontrado.")
+
+        user_ref = query[0].reference
 
         for produto in produtos:
             # Adicionando produto à subcoleção
@@ -54,42 +56,41 @@ def salvar_produtos_firestore(email, produtos):
 def upload():
     if request.method == 'POST':
         logging.info("Recebendo requisição POST para upload.")
+        
         if 'planilha' not in request.files:
             logging.error("Nenhuma planilha foi enviada no formulário.")
             return render_template('upload.html', error="Nenhuma planilha foi enviada.")
-        
+
         file = request.files['planilha']
         if file.filename == '':
             logging.error("Nenhum arquivo selecionado.")
             return render_template('upload.html', error="Nenhuma planilha foi selecionada.")
 
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-            logging.info(f"Arquivo {filename} salvo com sucesso em {file_path}")
-
             try:
-                # Processar a planilha e obter os dados
-                produtos = processar_planilha(file_path)
+                # Processa a planilha e obtém produtos válidos e ignorados
+                produtos, produtos_ignorados = processar_planilha(file)
                 logging.info(f"Processamento da planilha concluído com sucesso: {produtos}")
 
-                # Vamos pegar o email do usuário (assumindo que ele esteja autenticado no Firebase front-end)
-                # Para este exemplo, passamos o email como um parâmetro via POST ou autenticado
-                email_usuario = request.form.get('email')  # Pegue o email do formulário ou da sessão
+                email_usuario = request.form.get('email')
 
-                # Salvar os produtos no Firestore, na subcoleção 'produtos' para o usuário
+                # Salvar produtos no Firestore
                 salvar_produtos_firestore(email_usuario, produtos)
 
-                return redirect(url_for('upload_success'))
+                # Exibe mensagem de sucesso com produtos ignorados, se houver
+                if produtos_ignorados:
+                    mensagem = f"Upload realizado com sucesso, mas os seguintes produtos foram ignorados por terem quantidade 0: {', '.join(produtos_ignorados)}"
+                else:
+                    mensagem = "Produtos cadastrados com sucesso, aperte o botão para voltar ao Dashboard!"
+
+                return render_template('upload_success.html', mensagem=mensagem)
             except Exception as e:
                 logging.error(f"Erro ao processar a planilha ou salvar no Firestore: {e}")
                 return render_template('upload.html', error=str(e))
         else:
-            logging.error("Arquivo com formato não permitido.")
+            logging.error("Formato de arquivo não permitido.")
             return render_template('upload.html', error="Formato de arquivo não permitido.")
     
-    logging.info("Acessando página de upload")
     return render_template('upload.html')
 
 @app.route("/download_model")
@@ -99,9 +100,9 @@ def download_model():
         logging.info(f"Arquivos no diretório: {os.listdir(app.config['UPLOAD_FOLDER'])}")
         
         return send_from_directory(app.config['UPLOAD_FOLDER'], 'planilha-modelo.xlsx', as_attachment=True)
-    except FileNotFoundError as e:
+    except Exception as e:
         logging.error(f"Erro ao baixar a planilha: {e}")
-        return render_template("error.html", error="Arquivo não encontrado.")
+        return render_template("error.html", error="Erro ao baixar a planilha modelo.")
 
 
 @app.route("/upload_success")

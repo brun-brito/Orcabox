@@ -76,7 +76,11 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.button-logout {
+button.active {
+    background-color: #28a745;
+}
+
+.button-logout, .cancel-btn {
     background-color: #dc3545 !important;
 }
 

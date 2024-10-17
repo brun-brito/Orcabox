@@ -17,11 +17,14 @@
         <button onclick="downloadModel()">Baixar Planilha Modelo</button>
         
         <!-- Formulário de upload -->
-        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" onsubmit="mostrarLoading();">
             <input type="hidden" name="email" id="email">
             <input type="file" name="planilha" id="file-upload" accept=".xlsx,.xls" required>
-            <button type="submit" id="upload-btn" disabled>Anexar Planilha</button>
-        </form>
+            <button type="submit" id="upload-btn" disabled>
+                <span id="upload-text">Anexar Planilha</span>
+                <span id="upload-spinner" class="loading-spinner" style="display: none;"></span>
+            </button>
+        </form>        
 
         <div class="fatura-section">
             <h3>Fatura estimada</h3>
@@ -46,9 +49,11 @@
                 <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
                 <!-- Produtos aparecerão aqui -->
             </tbody>
-        </table>        
-    
-            <button id="button-logout" class="button-logout" onclick="Logout()">Sair</button>
+        </table>
+        
+        <button id="add-product-btn">Adicionar Produto</button>
+        
+        <button id="button-logout" class="button-logout" onclick="Logout()">Sair</button>
     </div>
 
     

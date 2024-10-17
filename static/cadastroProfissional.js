@@ -82,7 +82,7 @@ async function Cadastrar() {
             uf: uf,
             especialidade: especialidade,
             numeroConselho: numeroConselho,
-            pagamento: false,
+            pagamento: true, /* LEMBRAR DE TROCAR PRA FALSE EM PRODUÇÃO */
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
