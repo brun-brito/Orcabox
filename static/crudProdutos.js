@@ -177,6 +177,7 @@ function mostrarLoading() {
     uploadBtn.disabled = true;
 }
 
+// Função pra adicionar manual os produtos
 document.addEventListener('DOMContentLoaded', function () {
     const addProductButton = document.getElementById('add-product-btn');
     const produtosBody = document.getElementById('produtos-body');
