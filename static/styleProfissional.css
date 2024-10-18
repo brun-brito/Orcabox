@@ -1,104 +1,193 @@
+/* Estilo do body */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
 }
 
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+    display: none;
+}
+/* Container do formulário */
 .container {
     background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
+    padding: 25px;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 600px; /* Unificado para todas as .container */
-    text-align: center;
-}
-
-h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.container input,
-textarea {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.password-container {
-    position: relative;
     width: 100%;
+    max-width: 500px;
+    /* height: 100%;
+    max-height: auto; */
+    text-align: center;
+    margin-top: 100px;
+}
+
+/* Estilo do título */
+h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#register-nome {
+    background-color: rgb(202, 202, 202);
+}
+
+#register-button {
+    margin-top: 10px;
+}
+
+/* Estilo do grupo de inputs */
+.input-group {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #1976D2;
+    outline: none;
+}
+
+/* Botão de pesquisa pequeno e sutil */
+.input-group .search-btn {
+    width: 15px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
     display: flex;
     align-items: center;
+    justify-content: right;
+    color: #1976D2;
+    font-size: 18px;
+    transition: color 0.3s ease;
 }
 
-.password-container input {
-    padding-right: 40px;
+.input-group .search-btn:hover {
+    color: #0056b3;
 }
 
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    cursor: pointer;
+/* Estilo dos inputs e selects */
+.container input,
+.container select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
 }
 
+.container select:focus,
+.container input:focus {
+    border-color: #1976D2;
+    box-shadow: 0 0 5px rgba(25, 118, 210, 0.5);
+    outline: none;
+}
+
+/* Campos em linhas */
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+}
+
+.form-row input {
+    flex: 1;
+}
+
+/* Botão principal */
 .container button {
     width: 100%;
     padding: 12px;
     border: none;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 8px;
+    background-color: #1976D2;
+    color: white;
     font-size: 16px;
-    margin-top: 10px;
+    cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
-    background-color: #1976D2;
 }
 
-.container button:hover {
-    background-color: #1976D2;
-    box-shadow: 0 4px 8px rgba(40, 53, 167, 0.4);
+/* .container button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+} */
+ 
+.password-container button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-button:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
+
+/* Campo de senha com ícone */
+.password-container {
+    position: relative;
+    width: 100%;
 }
 
-.button-logout {
-    background-color: #dc3545 !important;
+.password-container i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
 }
 
-.button-logout:hover {
-    background-color: #c82333 !important;
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4) !important;
+.password-container i:hover {
+    color: #1976D2;
 }
 
-.button-payment {
-    background-color: #17a2b8;
+/* Spinner de carregamento */
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #1976D2;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-top: 10px;
 }
 
-.button-payment:hover {
-    background-color: #1976D2;
-    box-shadow: 0 4px 8px rgba(4, 0, 250, 0.4);
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-.button-orcamento-access {
-    background-color: rgb(4, 185, 4) !important;
-}
-.button-orcamento-access:hover {
-    background-color: rgb(0, 126, 0) !important;
-}
-
+/* Estilo do link de login */
 .container p {
-    margin-top: 20px;
+    margin-top: 15px;
     font-size: 14px;
 }
 
@@ -111,121 +200,124 @@ button:disabled {
     text-decoration: underline;
 }
 
-.loading-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #09f;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        max-width: 100%;
     }
-    100% {
-        transform: rotate(360deg);
+
+    .conselho-row {
+        flex-direction: row; /* Mantém em linha no mobile */
+    }
+
+    #verify-conselho-button {
+        width: 42px;
+        margin-top: 0;
     }
 }
 
-#upload-btn {
-    background-color: #ddd;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: not-allowed;
+/* Classe para inputs e botões desativados */
+.disabled-input {
+    background-color: rgb(202, 202, 202) !important;
+    cursor: not-allowed !important;
+    color: #b2b2b2 !important;
+    pointer-events: none !important;
 }
 
-#upload-btn.active {
-    background-color: #1976D2;
-    cursor: pointer;
+.disabled-button {
+    color: #b2b2b2 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    background-color: #f0f0f0 !important;
 }
 
-/* Estilo da tabela */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+input[type="date"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: white;
+    color: black;
 }
 
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
+.form-row {
+    display: flex;
+    gap: 10px; /* Espaço entre os elementos */
+    align-items: center;
 }
 
-th {
-    background-color: #f8f9fa;
-}
-
-td {
-    background-color: #ffffff;
-    word-break: keep-all;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-tr:hover {
-    background-color: #f1f1f1;
-}
-
-button.edit-btn, button.delete-btn {
-    padding: 8px 12px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-}
-
-button.edit-btn {
+#verify-conselho-button {
     background-color: #007bff;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    height: 38px;
+    width: 38px;
+    margin-top: 10px;
 }
 
-button.edit-btn:hover {
+#register-uf {
+    text-transform: uppercase;
+}
+
+#verify-conselho-button:hover {
     background-color: #0056b3;
 }
 
-button.delete-btn {
-    background-color: #dc3545;
+#verify-conselho-button:disabled {
+    background-color: #b2b2b2;
+    cursor: not-allowed;
 }
 
-button.delete-btn:hover {
-    background-color: #c82333;
-}
-
-/* Estilizando o combobox */
-select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+#search-icon-conselho {
     font-size: 16px;
-    background-color: #fff;
-    color: #333;
+}
+
+.conselho-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.conselho-row input {
+    flex: 1; 
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+#verify-conselho-button {
+    background-color: white;
+    border: none;
+    padding: 8px;
     cursor: pointer;
-    appearance: none; /* Remove a aparência padrão do select */
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 viewBox%3D%220 0 4 5%22%3E%3Cpath fill%3D%22%23444444%22 d%3D%22M2 0L0 2h4zM2 5L0 3h4z%22/%3E%3C/svg%3E'); /* Ícone de seta */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
+    color: #007bff;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    height: 42px;
+    width: 42px; /* Largura e altura iguais para manter a proporção */
 }
 
-/* Estilo para o combobox no hover */
-select:hover {
-    border-color: #1976D2;
+#verify-conselho-button:hover {
+    background-color: #0056b3;
 }
 
-/* Estilo para o combobox ao focar */
-select:focus {
-    outline: none;
-    border-color: #1976D2;
-    box-shadow: 0 0 5px rgba(25, 118, 210, 0.5);
+#verify-conselho-button:disabled {
+    background-color: #b2b2b2;
+    cursor: not-allowed;
+}
+
+#search-icon-conselho {
+    font-size: 18px;
 }
