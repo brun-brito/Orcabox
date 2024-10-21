@@ -22,13 +22,10 @@
             <!-- Formulário de upload -->
             <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" onsubmit="mostrarLoading();">
                 <input type="hidden" name="email" id="email">
-                <input type="file" name="planilha" id="file-upload" accept=".xlsx,.xls" required>
+                <input type="file" name="planilha" id="file-upload" accept=".xlsx,.xls,.zip" required>
                 <button type="submit" id="upload-btn" disabled>
                     <i class="fas fa-upload"></i> <!-- Ícone de upload -->
                     <span id="upload-text">Submeter Planilha</span>
-                    <span id="upload-spinner" class="loading-spinner" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i> <!-- Ícone de carregamento animado -->
-                    </span>
                 </button>
             </form>        
         </div>

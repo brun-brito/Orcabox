@@ -8,11 +8,19 @@ function hideLoading(buttonId, loadingId) {
     document.getElementById(loadingId).style.display = "none";
 }
 
+let conselhoValidado = false;
+
+// Função que será chamada após a validação bem-sucedida na lupa
+function setConselhoValidado() {
+    conselhoValidado = true;
+}
+
+// Função de cadastro
 async function Cadastrar() {
     const buttonId = "register-button";
     const loadingId = "register-loading";
     showLoading(buttonId, loadingId);
-    
+
     try {
         const nome = document.getElementById("register-nome").value;
         const telefone = document.getElementById("register-number").value;
@@ -24,8 +32,18 @@ async function Cadastrar() {
         const especialidade = document.getElementById("register-especialidade").value;
         const numeroConselho = document.getElementById("register-numero-conselho").value;
 
+        // Verificar se o conselho precisa ser validado
+        const precisaValidarConselho = ['cfbm', 'cff', 'cfm', 'cro'].includes(especialidade);
+
+        // Se a validação for necessária e não tiver sido concluída, mostrar erro
+        if (precisaValidarConselho && !conselhoValidado) {
+            alert("Por favor, valide seu conselho antes de concluir o cadastro.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
+
         // Validações básicas
-        if (!email || !password || !nome || !telefone || !cep || !cpf || !uf || !especialidade || !numeroConselho) {
+        if (!email || !password || !nome || !telefone || !cep || !cpf || !uf || !especialidade) {
             alert("Por favor, preencha todos os campos.");
             hideLoading(buttonId, loadingId);
             return false;
@@ -81,8 +99,8 @@ async function Cadastrar() {
             cpf: cpf,
             uf: uf,
             especialidade: especialidade,
-            numeroConselho: numeroConselho,
-            pagamento: true, /* LEMBRAR DE TROCAR PRA FALSE EM PRODUÇÃO */
+            numeroConselho: numeroConselho || null,
+            pagamento: true, /* LEMBRAR DE TROCAR PARA FALSE EM PRODUÇÃO */
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -90,7 +108,7 @@ async function Cadastrar() {
         alert("Seus dados foram cadastrados com sucesso.");
         document.getElementById("register-form").reset();
         window.location.href = "login-profissional";
-        
+
     } catch (error) {
         // Lidar com erros de autenticação
         handleAuthError(error);
@@ -152,34 +170,6 @@ async function verificaTelefone(telefone) {
         console.error("Erro ao verificar telefone: ", error);
         return false;
     }
-}
-
-function validarCPF(cpf) {
-    cpf = cpf.replace(/[^\d]+/g,'');
-    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-        return false;
-    }
-
-    let soma = 0;
-    let resto;
-    
-    for (let i = 1; i <= 9; i++) {
-        soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
-    }
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(cpf.substring(9, 10))) return false;
-    
-    soma = 0;
-
-    for (let i = 1; i <= 10; i++) {
-        soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
-    }
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(cpf.substring(10, 11))) return false;
-    
-    return true;
 }
 
 function togglePasswordVisibility(passwordFieldId) {

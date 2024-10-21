@@ -61,32 +61,9 @@ textarea {
     background-color: #28a745;
 }
 
-.container button:hover {
+#register-button:hover {
     background-color: #218838;
     box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
-}
-
-button:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-}
-
-.button-logout {
-    background-color: #dc3545 !important;
-}
-
-.button-logout:hover {
-    background-color: #c82333 !important;
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4) !important;
-}
-
-.button-payment {
-    background-color: #17a2b8;
-}
-
-.button-payment:hover {
-    background-color: #138496;
-    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.4);
 }
 
 .container p {
@@ -121,77 +98,6 @@ button:disabled {
     100% {
         transform: rotate(360deg);
     }
-}
-
-#upload-btn {
-    background-color: #ddd;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: not-allowed;
-}
-
-#upload-btn.active {
-    background-color: #28a745;
-    cursor: pointer;
-}
-
-/* Estilo da tabela */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    overflow-x: auto; 
-    display: block;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
-}
-
-th {
-    background-color: #f8f9fa;
-}
-
-td {
-    background-color: #ffffff;
-    word-break: keep-all;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-tr:hover {
-    background-color: #f1f1f1;
-}
-
-button.edit-btn, button.delete-btn {
-    padding: 8px 12px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-}
-
-button.edit-btn {
-    background-color: #007bff;
-}
-
-button.edit-btn:hover {
-    background-color: #0056b3;
-}
-
-button.delete-btn {
-    background-color: #dc3545;
-}
-
-button.delete-btn:hover {
-    background-color: #c82333;
 }
 
 #cpf-field, #nome-completo-field, #cnpj-field {
@@ -239,38 +145,42 @@ select {
         font-size: 12px;
     }
 
-    table {
-        width: 100%;
-        overflow-x: auto;
-        display: block;
-    }
-
-    th, td {
-        padding: 8px;
-        font-size: 12px;
-    }
-    
-    button.edit-btn, button.delete-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-    }
-
 }
 
-.fatura-section {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-}
-.fatura-section h3 {
-    margin: 0 0 10px 0;
-}
-.fatura-section p {
-    margin: 5px 0;
+#register-razao, #register-fantasia {
+    background-color: rgb(202, 202, 202);
 }
 
-#valor-fatura{
-    color: green;
-    font-weight: bold;
+.input-group .search-btn {
+    width: 15px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    color: #28a745;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+
+.input-group {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+.search-btn {
+    margin-top: 0 !important;
 }

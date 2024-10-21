@@ -19,43 +19,43 @@ function levenshtein(a, b) {
     return matrix[a.length][b.length];
 }
 
-// Evento de mudança no campo de especialidade para exibir ou ocultar o botão de verificação
+// Função para exibir ou ocultar o botão de verificação de conselho
 document.getElementById('register-especialidade').addEventListener('change', function () {
     const conselho = this.value;
     const verifyButton = document.getElementById('verify-conselho-button');
-
     const validacaoNecessaria = ['cfbm', 'cff', 'cfm', 'cro'].includes(conselho);
     verifyButton.style.display = validacaoNecessaria ? 'inline' : 'none';
 });
 
-// Evento de clique para verificar conselho
 document.getElementById('verify-conselho-button').addEventListener('click', async function () {
     const conselho = document.getElementById('register-especialidade').value;
     const uf = document.getElementById('register-uf').value.toLowerCase();
     const numeroConselho = document.getElementById('register-numero-conselho').value;
     const nomeInput = document.getElementById('register-nome').value.trim().toUpperCase();
 
-    if (!conselho || !uf || !numeroConselho) {
-        showError('Por favor, preencha todos os campos de conselho.');
+    if (!conselho || !numeroConselho) {
+        showError('Por favor, preencha todos os campos obrigatórios.');
         return;
     }
 
     try {
         toggleLoadingConselho(true);
 
-        // Chama o back-end para verificar o conselho
-        const response = await fetch(`http://localhost:3000/v1/consultar-conselho`, {
+        const payload = montarPayload(conselho, uf, numeroConselho);
+
+        const response = await fetch(`https://api.injectbox.com.br/v1/consultar-conselho`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ conselho, uf, inscricao: numeroConselho }),
+            body: JSON.stringify(payload),
         });
 
         const result = await response.json();
 
         if (response.status === 200) {
-            const isNomeValido = validarNomeComApi(result, nomeInput);
+            const isNomeValido = validarNomePorConselho(conselho, result, nomeInput);
             if (isNomeValido) {
                 showSuccess('Conselho validado com sucesso!');
+                setConselhoValidado();
                 disableInputsConselho();
             } else {
                 showError('Nome não corresponde a nenhum registro encontrado.');
@@ -71,47 +71,61 @@ document.getElementById('verify-conselho-button').addEventListener('click', asyn
     }
 });
 
-function validarNomeComApi(apiResponse, nomeInput) {
-    // Verifica se a resposta é válida e contém dados
-    if (!apiResponse || !Array.isArray(apiResponse) || apiResponse.length === 0) {
-        console.warn('Nenhum dado válido encontrado na resposta da API.');
-        return false;
+// Função para montar o payload com os parâmetros corretos
+function montarPayload(conselho, uf, numeroConselho, nome) {
+    console.log('Montando payload para:', conselho);
+    switch (conselho) {
+        case 'cro':
+            return { conselho, uf, inscricao: numeroConselho };
+        case 'cfbm':
+            return { conselho, inscricao: numeroConselho };
+        case 'cfm':
+            return { conselho, uf, inscricao: numeroConselho };
+        case 'cff':
+            return { conselho, uf, nome, inscricao: numeroConselho, municipio: 'todos', categoria: 'farmaceutico' };
+        default:
+            console.error('Conselho não suportado:', conselho);
+            throw new Error('Conselho não suportado.');
     }
+}
 
-    // Extraindo e exibindo os nomes retornados pela API para garantir que a resposta está correta
-    const nomesEncontrados = apiResponse.map(entry => entry.nome.toUpperCase());
+// Função para validar o nome de acordo com cada conselho
+function validarNomePorConselho(conselho, apiResponse, nomeInput) {
+    console.log('Iniciando validação de nome com a API...');
+
+    let nomesEncontrados = [];
+
+    switch (conselho) {
+        case 'cfbm':
+            nomesEncontrados = apiResponse.data[0].lista_registros.map(entry => entry.nome_razao_social.toUpperCase());
+            break;
+        case 'cro':
+            nomesEncontrados = apiResponse.data.map(entry => entry.nome.toUpperCase());
+            break;
+        case 'cfm':
+            nomesEncontrados = apiResponse.data.map(entry => entry.nome.toUpperCase());
+            break;
+        case 'cff':
+            nomesEncontrados = apiResponse.data[0].resultado.map(entry => entry.nome.toUpperCase());
+            break;
+        default:
+            console.error('Conselho não reconhecido:', conselho);
+            return false;
+    }
 
     console.log('Nomes recebidos da API:', nomesEncontrados);
     console.log(`Nome inserido para comparação: "${nomeInput}"`);
 
-    // Distância máxima para considerar os nomes semelhantes
-    const threshold = 8;
+    const threshold = 8; // Definimos um limite para a distância de Levenshtein
 
-    // Verifica se algum dos nomes é semelhante ao nome fornecido pelo usuário
     return nomesEncontrados.some(nome => {
         const distancia = levenshtein(nomeInput, nome);
+        console.log(`Comparando "${nomeInput}" com "${nome}": Distância = ${distancia}`);
         return distancia <= threshold;
     });
 }
 
-
-// Função para exibir mensagem de sucesso
-function showSuccess(message) {
-    const successMessageElement = document.getElementById('conselho-result');
-    successMessageElement.textContent = message;
-    successMessageElement.style.color = 'green';
-    successMessageElement.style.display = 'block';
-}
-
-// Função para exibir mensagem de erro
-function showError(message) {
-    const errorMessageElement = document.getElementById('conselho-result');
-    errorMessageElement.textContent = message;
-    errorMessageElement.style.color = 'red';
-    errorMessageElement.style.display = 'block';
-}
-
-// Alterna ícone de carregamento para evitar cliques duplicados
+// Funções de interface e manipulação de estado
 function toggleLoadingConselho(isLoading) {
     const searchIcon = document.getElementById('search-icon-conselho');
     const loadingSpinner = document.getElementById('loading-spinner-conselho');
@@ -119,14 +133,16 @@ function toggleLoadingConselho(isLoading) {
     if (isLoading) {
         searchIcon.style.display = 'none';
         loadingSpinner.style.display = 'inline-block';
+        console.log('Ícone de carregamento exibido.');
     } else {
         searchIcon.style.display = 'inline';
         loadingSpinner.style.display = 'none';
+        console.log('Ícone de carregamento ocultado.');
     }
 }
 
-// Desativa os campos após uma validação bem-sucedida
 function disableInputsConselho() {
+    console.log('Desabilitando inputs...');
     document.getElementById('register-uf').disabled = true;
     document.getElementById('register-numero-conselho').disabled = true;
     document.getElementById('verify-conselho-button').disabled = true;
@@ -134,9 +150,25 @@ function disableInputsConselho() {
     document.getElementById('register-uf').classList.add('disabled-input');
     document.getElementById('register-numero-conselho').classList.add('disabled-input');
     document.getElementById('verify-conselho-button').classList.add('disabled-button');
+    console.log('Inputs desabilitados com sucesso.');
 }
 
-// Tratamento de erros específicos da consulta de conselho
+function showError(message) {
+    const errorMessageElement = document.getElementById('conselho-result');
+    errorMessageElement.textContent = message;
+    errorMessageElement.style.color = 'red';
+    errorMessageElement.style.display = 'block';
+    console.error('Erro exibido:', message);
+}
+
+function showSuccess(message) {
+    const successMessageElement = document.getElementById('conselho-result');
+    successMessageElement.textContent = message;
+    successMessageElement.style.color = 'green';
+    successMessageElement.style.display = 'block';
+    console.log('Mensagem de sucesso exibida:', message);
+}
+
 function handleConselhoError(status, message) {
     switch (status) {
         case 400:
@@ -150,5 +182,6 @@ function handleConselhoError(status, message) {
             break;
         default:
             showError('Erro desconhecido.');
+            console.warn('Erro desconhecido:', status, message);
     }
 }

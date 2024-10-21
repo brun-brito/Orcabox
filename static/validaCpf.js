@@ -36,7 +36,7 @@ document.getElementById('verify-cpf-button').addEventListener('click', async fun
             result = await simularSucessoConsultaCPF();
         } else {
             const response = await fetch(
-                `http://localhost:3000/v1/consultar-cpf?cpf=${cpf}&birthdate=${birthdate}`
+                `https://api.injectbox.com.br/v1/consultar-cpf?cpf=${cpf}&birthdate=${birthdate}`
             );
             result = await response.json();
         }
@@ -166,7 +166,6 @@ function disableInputs(isTemporary, isPermanentlyDisabled = false) {
 }
 
 const birthdateInput = document.getElementById('register-birthdate');
-
 // Função que aplica a máscara conforme o usuário digita
 birthdateInput.addEventListener('input', (event) => {
     let value = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
@@ -191,3 +190,30 @@ birthdateInput.addEventListener('keydown', (event) => {
     }
 });
 
+function validarCPF(cpf) {
+    cpf = cpf.replace(/[^\d]+/g,'');
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+        return false;
+    }
+
+    let soma = 0;
+    let resto;
+    
+    for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+    
+    soma = 0;
+
+    for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+    
+    return true;
+}

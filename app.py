@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, send_file
 from services.mp_service import gerar_link_pagamento, verificar_pagamento
 from werkzeug.utils import secure_filename
 from services.planilha_service import processar_planilha
@@ -8,13 +8,16 @@ from firebase_admin import credentials, firestore
 import logging
 import json
 from dotenv import load_dotenv
+import zipfile
+from io import BytesIO
+import tempfile
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
+ALLOWED_EXTENSIONS = {'xls', 'xlsx', 'zip'}
 
 load_dotenv()
 
@@ -56,7 +59,7 @@ def salvar_produtos_firestore(email, produtos):
 def upload():
     if request.method == 'POST':
         logging.info("Recebendo requisição POST para upload.")
-        
+
         if 'planilha' not in request.files:
             logging.error("Nenhuma planilha foi enviada no formulário.")
             return render_template('upload.html', error="Nenhuma planilha foi enviada.")
@@ -68,41 +71,73 @@ def upload():
 
         if file and allowed_file(file.filename):
             try:
-                # Processa a planilha e obtém produtos válidos e ignorados
-                produtos, produtos_ignorados = processar_planilha(file)
+                if file.filename.endswith('.zip'):
+                    # Extrair arquivos do ZIP em um diretório temporário
+                    with tempfile.TemporaryDirectory() as temp_dir:
+                        zip_path = os.path.join(temp_dir, file.filename)
+                        file.save(zip_path)
+
+                        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                            zip_ref.extractall(temp_dir)
+
+                        # Procura arquivos XLSX dentro do ZIP
+                        xlsx_files = [f for f in os.listdir(temp_dir) if f.endswith('.xlsx')]
+                        if not xlsx_files:
+                            raise ValueError("Nenhum arquivo XLSX encontrado no ZIP.")
+
+                        # Processar o primeiro XLSX encontrado
+                        xlsx_path = os.path.join(temp_dir, xlsx_files[0])
+                        with open(xlsx_path, 'rb') as xlsx_file:
+                            produtos, produtos_ignorados = processar_planilha(xlsx_file)
+
+                else:
+                    # Se não for ZIP, processa o XLSX diretamente
+                    produtos, produtos_ignorados = processar_planilha(file)
+
                 logging.info(f"Processamento da planilha concluído com sucesso: {produtos}")
 
                 email_usuario = request.form.get('email')
-
-                # Salvar produtos no Firestore
                 salvar_produtos_firestore(email_usuario, produtos)
 
-                # Exibe mensagem de sucesso com produtos ignorados, se houver
                 if produtos_ignorados:
-                    mensagem = f"Upload realizado com sucesso, mas os seguintes produtos foram ignorados por terem quantidade 0: {', '.join(produtos_ignorados)}"
+                    mensagem = f"Upload realizado com sucesso, mas os seguintes produtos foram ignorados: {', '.join(produtos_ignorados)}"
                 else:
-                    mensagem = "Produtos cadastrados com sucesso, aperte o botão para voltar ao Dashboard!"
+                    mensagem = "Upload realizado com sucesso!"
 
                 return render_template('upload_success.html', mensagem=mensagem)
+
             except Exception as e:
                 logging.error(f"Erro ao processar a planilha ou salvar no Firestore: {e}")
                 return render_template('upload.html', error=str(e))
         else:
             logging.error("Formato de arquivo não permitido.")
             return render_template('upload.html', error="Formato de arquivo não permitido.")
-    
+
     return render_template('upload.html')
 
-@app.route("/download_model")
+@app.route("/download_model", methods=["GET"])
 def download_model():
     try:
-        logging.info(f"Acessando rota de download da planilha modelo. Procurando em {app.config['UPLOAD_FOLDER']}")
-        logging.info(f"Arquivos no diretório: {os.listdir(app.config['UPLOAD_FOLDER'])}")
-        
-        return send_from_directory(app.config['UPLOAD_FOLDER'], 'planilha-modelo.xlsx', as_attachment=True)
+        modelo_path = os.path.join(app.config['UPLOAD_FOLDER'], 'planilha-modelo.xlsx')
+
+        # Verifica se o arquivo existe
+        if not os.path.isfile(modelo_path):
+            logging.error("Arquivo de modelo não encontrado.")
+            return render_template("error.html", error="Arquivo modelo não encontrado.")
+
+        # Cria um ZIP em memória para enviar ao usuário
+        memory_file = BytesIO()
+        with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+            zf.write(modelo_path, 'planilha-modelo.xlsx')
+        memory_file.seek(0)
+
+        logging.info("Download do ZIP iniciado com sucesso.")
+        return send_file(memory_file, download_name='planilha-modelo.zip', as_attachment=True)
+
     except Exception as e:
         logging.error(f"Erro ao baixar a planilha: {e}")
         return render_template("error.html", error="Erro ao baixar a planilha modelo.")
+
 
 
 @app.route("/upload_success")

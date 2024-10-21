@@ -15,7 +15,8 @@ async function Cadastrar() {
     
     try {
         const tipoPessoa = document.getElementById('tipo-pessoa').value;
-        const nomeCompleto = document.getElementById('register-nome-completo') ? document.getElementById('register-nome-completo').value : null;
+        const nomeCompleto = document.getElementById('register-nome') ? document.getElementById('register-nome').value : null;
+        const dataNacs = document.getElementById('register-birthdate') ? document.getElementById('register-birthdate').value : null;
         const cpf = document.getElementById('register-cpf') ? document.getElementById('register-cpf').value : null;
         const cnpj = document.getElementById('register-cnpj') ? document.getElementById('register-cnpj').value : null;
         const razaoSocial = document.getElementById('register-razao') ? document.getElementById('register-razao').value : null;
@@ -35,8 +36,8 @@ async function Cadastrar() {
 
         // Validação para Pessoa Física
         if (tipoPessoa === 'PF') {
-            if (!nomeCompleto || !cpf || cpf.length !== 11) {
-                alert("Por favor, preencha corretamente o Nome Completo e CPF.");
+            if (!nomeCompleto || !cpf || !dataNacs || cpf.length !== 11) {
+                alert("Por favor, preencha corretamente a Data de Nascimento e CPF, e clique no ícone ao lado para buscar o nome completo.");
                 hideLoading(buttonId, loadingId);
                 return false;
             }
@@ -94,11 +95,12 @@ async function Cadastrar() {
         };
 
         if (tipoPessoa === 'PF') {
-            usuarioData.tipoPessoa = 'Pessoa Física';
+            usuarioData.tipoPessoa = 'PF';
             usuarioData.nome_fantasia = nomeCompleto;
+            usuarioData.data_nascimento = dataNacs;
             usuarioData.cpf = cpf;
         } else if (tipoPessoa === 'PJ') {
-            usuarioData.tipoPessoa = 'Pessoa Jurídica';
+            usuarioData.tipoPessoa = 'PJ';
             usuarioData.cnpj = cnpj;
             usuarioData.razao_social = razaoSocial;
             usuarioData.nome_fantasia = nomeFantasia;
@@ -174,25 +176,58 @@ async function verificaTelefone(telefone) {
 
 function togglePessoaFields() {
     const tipoPessoa = document.getElementById('tipo-pessoa').value;
-    const cpfField = document.getElementById('cpf-field');
-    const nomeCompletoField = document.getElementById('nome-completo-field');
+
+    // Campos de Pessoa Física
+    const campoCpf = document.getElementById('register-cpf');
+    const campoNome = document.getElementById('register-nome');
+    const campoBirthdate = document.getElementById('register-birthdate');
+    const botaoVerificaCpf = document.getElementById('verify-cpf-button');
+    const idCpf = document.getElementById('id-cpf');
+    const idData = document.getElementById('id-data');
+
+    // Campos de Pessoa Jurídica
     const cnpjField = document.getElementById('cnpj-field');
     const razaoField = document.getElementById('razao-field');
     const fantasiaField = document.getElementById('fantasia-field');
 
+    // Limpar os campos sempre que alternar o tipo de pessoa
+    limparCampos();
+
     if (tipoPessoa === 'PF') {
-        nomeCompletoField.style.display = 'block';
-        cpfField.style.display = 'block';
-        cnpjField.style.display = 'none';
-        razaoField.style.display = 'none';
-        fantasiaField.style.display = 'none';
+        // Exibir campos e botões específicos para Pessoa Física
+        idCpf.style.display = '';
+        idData.style.display = '';
+        campoCpf.style.display = 'block';
+        campoBirthdate.style.display = 'block';
+        botaoVerificaCpf.style.display = '';
+        campoNome.style.display = '';
+        campoNome.style.backgroundColor = 'rgb(202, 202, 202)';
     } else if (tipoPessoa === 'PJ') {
-        nomeCompletoField.style.display = 'none';
-        cpfField.style.display = 'none';
+        // Exibir campos específicos para Pessoa Jurídica
         cnpjField.style.display = 'block';
         razaoField.style.display = 'block';
         fantasiaField.style.display = 'block';
     }
+}
+
+function limparCampos() {
+    // Esconde e limpa todos os campos comuns a ambos os tipos
+    document.getElementById('register-cpf').value = '';
+    document.getElementById('register-nome').value = '';
+    document.getElementById('register-birthdate').value = '';
+    document.getElementById('register-cnpj').value = '';
+    document.getElementById('register-razao').value = '';
+    document.getElementById('register-fantasia').value = '';
+
+    // Esconder campos comuns
+    document.getElementById('register-cpf').style.display = 'none';
+    document.getElementById('register-birthdate').style.display = 'none';
+    document.getElementById('verify-cpf-button').style.display = 'none';
+    document.getElementById('register-nome').style.display = 'none';
+
+    document.getElementById('cnpj-field').style.display = 'none';
+    document.getElementById('razao-field').style.display = 'none';
+    document.getElementById('fantasia-field').style.display = 'none';
 }
 
 async function autoVerifyCNPJ() {
