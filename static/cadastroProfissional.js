@@ -28,6 +28,7 @@ async function Cadastrar() {
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
         const cpf = document.getElementById("register-cpf").value;
+        const dataNasc = document.getElementById("register-birthdate").value;
         const uf = document.getElementById("register-uf").value;
         const especialidade = document.getElementById("register-especialidade").value;
         const numeroConselho = document.getElementById("register-numero-conselho").value;
@@ -101,7 +102,8 @@ async function Cadastrar() {
             especialidade: especialidade,
             numeroConselho: numeroConselho || null,
             pagamento: true, /* LEMBRAR DE TROCAR PARA FALSE EM PRODUÇÃO */
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            dataNascimento: dataNasc,
         });
 
         // Mensagem de sucesso e redirecionamento

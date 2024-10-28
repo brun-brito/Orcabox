@@ -33,8 +33,13 @@ document.getElementById('verify-conselho-button').addEventListener('click', asyn
     const numeroConselho = document.getElementById('register-numero-conselho').value;
     const nomeInput = document.getElementById('register-nome').value.trim().toUpperCase();
 
+    if (!nomeInput) {
+        alert('Por favor, preencha primeiro seu CPF, data de nascimento e clique no ícone junto ao primeiro campo, para verificar os dados.');
+        return;
+    }
+
     if (!conselho || !numeroConselho) {
-        showError('Por favor, preencha todos os campos obrigatórios.');
+        alert('Por favor, preencha UF e número de conselho');
         return;
     }
 
