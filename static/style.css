@@ -184,3 +184,8 @@ select {
 .search-btn {
     margin-top: 0 !important;
 }
+
+.forgot-password {
+    font-size: 15px !important;
+    margin: 5px !important;
+}

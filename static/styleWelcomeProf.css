@@ -82,12 +82,12 @@ button:disabled {
 }
 
 .button-payment {
-    background-color: #17a2b8;
+    background-color: #6f42c1 !important;  
 }
 
 .button-payment:hover {
-    background-color: #1976D2;
-    box-shadow: 0 4px 8px rgba(4, 0, 250, 0.4);
+    background-color: #5a32a3 !important;
+    box-shadow: 0 4px 8px rgba(111, 66, 193, 0.4) !important;
 }
 
 .button-orcamento-access {
@@ -129,4 +129,37 @@ button:disabled {
     100% {
         transform: rotate(360deg);
     }
+}
+
+#edit-container {
+    display: none;
+    margin-top: 10px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.icon-button-save {
+    margin-top: 0 !important;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-field {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    border-color: #007bff;
 }

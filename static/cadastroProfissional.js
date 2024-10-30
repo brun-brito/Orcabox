@@ -50,6 +50,13 @@ async function Cadastrar() {
             return false;
         }
 
+        const cpfExists = await verificaCPF(cpf);
+        if (cpfExists) {
+            alert("Este CPF já está vinculado a outro profissional. Por favor, realize o Login.");
+            hideLoading(buttonId, loadingId);
+            return false;
+        }
+
         if (telefone.length !== 11 || !/^\d{11}$/.test(telefone)) {
             alert("O número de telefone deve conter exatamente 11 números.");
             hideLoading(buttonId, loadingId);
@@ -246,3 +253,35 @@ function handleAuthError(error) {
     }
     alert("Falha ao autenticar: " + message);
 }
+
+async function verificaCPF(cpf) {
+    try {
+        const querySnapshot = await db.collection('profissionais')
+            .where('cpf', '==', cpf)
+            .get();
+        return !querySnapshot.empty;  // Retorna true se o CPF já existe
+    } catch (error) {
+        console.error("Erro ao verificar CPF: ", error);
+        return false;
+    }
+}
+
+document.getElementById('forgot-password-link').addEventListener('click', async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('login-email').value;
+
+    if (!email) {
+        alert('Por favor, insira seu email para recuperar a senha.');
+        return;
+    }
+
+    await auth.sendPasswordResetEmail(email)
+        .then(() => {
+            alert(`Um link para redefinir sua senha foi enviado para o email '${email}'. Confira sua caixa de entrada ou Spam/ Lixo Eletrônico`);
+        })
+        .catch((error) => {
+            console.error('Erro ao enviar email de redefinição de senha:', error);
+            alert('Ocorreu um erro ao tentar enviar o email de redefinição de senha. Verifique se o email está correto.');
+        });
+});

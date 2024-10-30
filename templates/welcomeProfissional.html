@@ -11,20 +11,43 @@
 </head>
 <body>
     <div class="container" id="orcamento-container" style="display: none;">
+        <h1 id="welcome-message"><!-- aqui aparece o nome do profissional --></h1>    
         <h2>Painel do Profissional</h2>
-        <div id="orcamento-access-container"> <!-- aqui vai ficar o botao de assinar orcamento--></div>
-        <div>
-            <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">Assinar assistente de orçamentos</button>
+        
+        <div id="orcamento-access-container">
+            <button type="button" class="button-payment" onclick="window.location.href='{{ link_pagamento }}'">
+                <i class="fas fa-credit-card"></i> Assinar assistente de orçamentos
+            </button>
         </div>
+    
         <div>
-            <button id="logout-button" type="button" class="button-logout" onclick="Logout()">Sair</button>
+            <button class="icon-button" onclick="toggleEditContainer()">
+                <i class="fas fa-edit"></i> Alterar número de WhatsApp
+            </button>
+            <div id="edit-container" class="input-container" style="display: none;">
+                <input 
+                    type="text" 
+                    id="numero-conversa" 
+                    class="input-field" 
+                    placeholder="Digite o número de WhatsApp" 
+                    onkeydown="handleKeyPress(event)"
+                    maxlength="11" pattern="\d{11}">
+                <button class="icon-button-save" onclick="atualizarNumeroConversa()">
+                    <i class="fas fa-check"></i> Salvar
+                </button>
+            </div>
+        </div>
+    
+        <div>
+            <button id="logout-button" type="button" class="button-logout" onclick="Logout()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
             <div id="logout-loading" class="loading-spinner" style="display: none;"></div>
         </div>
     </div>
-
-    <div id="loading-screen" class="loading-spinner" style="display: block;">
-    </div>
-
+    
+    <div id="loading-screen" class="loading-spinner" style="display: block;"></div>
+    
     <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-firestore.js"></script>
     <script src="{{ url_for('static', filename='firebase.js') }}"></script>
@@ -34,12 +57,21 @@
         function showContent() {
             document.getElementById('orcamento-container').style.display = 'block'; 
             document.getElementById('loading-screen').style.display = 'none';
-        }
+        }        
 
-        firebase.auth().onAuthStateChanged(function(user) {
+        firebase.auth().onAuthStateChanged(async function(user) {
             if (user) {
+                const email = user.email;
+                const userData = await buscarDadosUsuario(email);
+                if (userData) {
+                    document.getElementById('welcome-message').innerText = 
+                        `Seja bem-vindo(a), ${formatarNomeCompleto(userData.nome)}`;
+                } else {
+                    document.getElementById('welcome-message').innerText = 
+                        `Usuário não encontrado.`;
+                }
                 showContent();
-                checkUserPayment(user.email);
+                checkUserPayment(email);
             } else {
                 window.location.href = "/login-profissional";
             }

@@ -41,12 +41,25 @@ async function Cadastrar() {
                 hideLoading(buttonId, loadingId);
                 return false;
             }
+
+            const cpfExists = await verificaCPF(cpf);
+            if (cpfExists) {
+                alert("Este CPF já está vinculado a outro distribuidor. Por favor, realize o Login.");
+                hideLoading(buttonId, loadingId);
+                return false;
+            }
         }
 
         // Validação para Pessoa Jurídica
         if (tipoPessoa === 'PJ') {
             if (!cnpj || cnpj.length !== 14 || !razaoSocial) {
                 alert("Por favor, preencha corretamente o CNPJ e Razão Social.");
+                hideLoading(buttonId, loadingId);
+                return false;
+            }
+            const cnpjExists = await verificaCNPJ(cnpj);
+            if (cnpjExists) {
+                alert("Este CNPJ já está vinculado a outro distribuidor. Por favor, realize o Login.");
                 hideLoading(buttonId, loadingId);
                 return false;
             }
@@ -353,3 +366,47 @@ function handleAuthError(error) {
     }
     alert("Falha ao autenticar: " + message);
 }
+
+async function verificaCPF(cpf) {
+    try {
+        const querySnapshot = await db.collection('distribuidores')
+            .where('cpf', '==', cpf)
+            .get();
+        return !querySnapshot.empty;  // Retorna true se o CPF já existe
+    } catch (error) {
+        console.error("Erro ao verificar CPF: ", error);
+        return false;
+    }
+}
+
+async function verificaCNPJ(cnpj) {
+    try {
+        const querySnapshot = await db.collection('distribuidores')
+            .where('cnpj', '==', cnpj)
+            .get();
+        return !querySnapshot.empty;  // Retorna true se o CNPJ já existe
+    } catch (error) {
+        console.error("Erro ao verificar CNPJ: ", error);
+        return false;
+    }
+}
+
+document.getElementById('forgot-password-link').addEventListener('click', async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('login-email').value;
+
+    if (!email) {
+        alert('Por favor, insira seu email para recuperar a senha.');
+        return;
+    }
+
+    await auth.sendPasswordResetEmail(email)
+        .then(() => {
+            alert(`Um link para redefinir sua senha foi enviado para o email '${email}'. Confira sua caixa de entrada ou Spam/ Lixo Eletrônico`);
+        })
+        .catch((error) => {
+            console.error('Erro ao enviar email de redefinição de senha:', error);
+            alert('Ocorreu um erro ao tentar enviar o email de redefinição de senha. Verifique se o email está correto.');
+        });
+});
