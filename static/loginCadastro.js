@@ -97,11 +97,12 @@ async function Cadastrar() {
         // Criar o usuário no Firebase Auth
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
-
+        let formattedPhone = '55' + telefone.replace(/^(\d{2})9?/, '$1');
+        
         // Monta o objeto do usuário com base no tipo de pessoa
         const usuarioData = {
             email: email,
-            telefone: telefone,
+            telefone: formattedPhone,
             cep: cep,
             insta: insta,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
